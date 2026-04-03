@@ -50,8 +50,8 @@ body::before{
 @keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 @keyframes slide-up{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-.screen{display:none;position:relative;z-index:1;}
-.screen.active{display:block;min-height:100vh;}
+.screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;overflow-x:hidden;}
+.screen.active{display:block;}
 
 /* ── Clouds ── */
 .cloud{position:fixed;z-index:0;background:white;border-radius:50px;opacity:0.7;animation:drift linear infinite;}
@@ -65,6 +65,7 @@ body::before{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   min-height:100vh;padding:40px 20px;text-align:center;
+  background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 40%,#e8f5d8 70%,#c8e8a0 100%);
 }
 .title-sign{
   background:var(--wood-light);border:3px solid var(--wood2);
@@ -111,7 +112,7 @@ body::before{
 }
 
 /* ════ MAP ════ */
-#screen-map{padding-bottom:60px;}
+#screen-map{padding-bottom:60px;background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 40%,#e8f5d8 70%,#c8e8a0 100%);}
 .map-header{
   background:var(--teal);border-bottom:4px solid var(--teal2);
   padding:13px 18px;display:flex;align-items:center;
@@ -167,7 +168,7 @@ body::before{
 .zbadge.lock{background:var(--cream2);color:var(--text3);border:2px solid var(--cream3);}
 
 /* ════ ZONE / PLAZA ════ */
-#screen-zone,#screen-plaza{padding-bottom:60px;}
+#screen-zone,#screen-plaza{padding-bottom:60px;background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 35%,#e8f5d8 65%,#c8e8a0 100%);}
 .zone-topbar{
   background:var(--cream);border-bottom:4px solid var(--cream3);
   padding:11px 16px;display:flex;align-items:center;gap:10px;
@@ -195,10 +196,20 @@ body::before{
 
 /* Dialogue */
 .dlg-bubble{display:flex;gap:11px;margin-bottom:11px;animation:slide-up .3s ease;}
-.npc-face{width:46px;height:46px;flex-shrink:0;background:var(--cream2);border:3px solid var(--cream3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--shadow2);}
+.npc-face{width:64px;height:64px;flex-shrink:0;}
 .bubble{background:white;border:3px solid var(--cream3);border-radius:16px 16px 16px 4px;padding:10px 14px;box-shadow:var(--shadow2);flex:1;}
 .bubble-name{font-size:11px;font-weight:900;color:var(--teal2);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px;}
 .bubble-txt{font-size:13px;font-weight:600;color:var(--text);line-height:1.8;}
+
+/* NPC SVG animations */
+@keyframes npc-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes npc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}93%,97%{transform:scaleY(0.08)}}
+@keyframes mouth-talk{0%,100%{d:path("M8,9 Q12,11 16,9")}50%{d:path("M8,9 Q12,14 16,9")}}
+@keyframes tail-wag{0%,100%{transform:rotate(-8deg) translateX(0)}50%{transform:rotate(8deg) translateX(2px)}}
+.npc-body{animation:npc-sway 2s ease-in-out infinite;transform-origin:bottom center;}
+.npc-blink{animation:blink 3s ease-in-out infinite;}
+.npc-talk{animation:mouth-talk .4s ease-in-out infinite;}
 
 /* Info cards */
 .sec-hdr{display:flex;align-items:center;gap:7px;margin:14px 0 9px;}
@@ -533,7 +544,12 @@ function radarSVG(){
   return`<svg width="240" height="240" viewBox="0 0 240 240" style="background:#fff8e8;border-radius:50%;border:3px solid #c8c0a0">${g}</svg>`;
 }
 
-function scr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+function scr(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+id);
+  el.classList.add('active');
+  el.scrollTop=0;
+}
 
 function startGame(){
   const n=document.getElementById('name-inp').value.trim();
@@ -569,6 +585,69 @@ function goZone(k){
   renderZone(z);
 }
 
+function npcSVG(av, delay){
+  const d = delay||0;
+  const chars = {
+    '🧑‍⚕️': {body:'#7ecfb0',head:'#f5d4a8',hair:'#4a3010',shirt:'#2bb5a0',acc:'stethoscope'},
+    '👩‍⚕️': {body:'#f5a0b8',head:'#f5c8a0',hair:'#3d2010',shirt:'#e8829a',acc:'stethoscope'},
+    '🧑':   {body:'#a0c8f0',head:'#f5c890',hair:'#5c3d1e',shirt:'#5588cc',acc:'none'},
+    '🧑‍🔧': {body:'#f0c060',head:'#f5c890',hair:'#3d2010',shirt:'#d4a030',acc:'wrench'},
+    '👩':   {body:'#d0a8e8',head:'#f5c8a0',hair:'#2c1808',shirt:'#9060c0',acc:'none'},
+    '👴':   {body:'#c8c8c8',head:'#f0c8a0',hair:'#d8d8d8',shirt:'#888888',acc:'cane'},
+  };
+  const c = chars[av] || {body:'#a8d8a8',head:'#f5c890',hair:'#5c3d1e',shirt:'#52b84a',acc:'none'};
+  const sd = `animation-delay:${d}s`;
+
+  let acc = '';
+  if(c.acc==='stethoscope') acc = `<path d="M22,30 Q18,36 20,42 Q22,46 26,44" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="26" cy="45" r="3" fill="#aaa" stroke="#888" stroke-width="1"/>`;
+  if(c.acc==='wrench') acc = `<rect x="30" y="28" width="4" height="14" rx="2" fill="#c8a030" transform="rotate(20,32,35)"/>`;
+  if(c.acc==='cane')   acc = `<path d="M34,44 Q36,42 34,28" stroke="#c8903a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+
+  return `<svg width="64" height="72" viewBox="0 0 48 72" xmlns="http://www.w3.org/2000/svg">
+    <g class="npc-body" style="${sd}">
+      <!-- shadow -->
+      <ellipse cx="24" cy="70" rx="14" ry="3" fill="rgba(0,0,0,0.1)"/>
+      <!-- body -->
+      <rect x="14" y="36" width="20" height="22" rx="8" fill="${c.body}" stroke="${c.shirt}" stroke-width="1.5"/>
+      <!-- shirt detail -->
+      <rect x="14" y="36" width="20" height="8" rx="5" fill="${c.shirt}"/>
+      <!-- legs -->
+      <rect x="15" y="54" width="7" height="14" rx="4" fill="${c.body}"/>
+      <rect x="26" y="54" width="7" height="14" rx="4" fill="${c.body}"/>
+      <!-- shoes -->
+      <ellipse cx="18" cy="68" rx="5" ry="3.5" fill="${c.hair}"/>
+      <ellipse cx="30" cy="68" rx="5" ry="3.5" fill="${c.hair}"/>
+      <!-- left arm -->
+      <rect x="6" y="37" width="8" height="5" rx="3" fill="${c.body}" transform="rotate(-15,10,39)"/>
+      <!-- right arm (holds acc) -->
+      <rect x="34" y="37" width="8" height="5" rx="3" fill="${c.body}" transform="rotate(15,38,39)"/>
+      ${acc}
+      <!-- head -->
+      <g class="npc-blink" style="transform-origin:24px 22px;${sd}">
+        <ellipse cx="24" cy="20" rx="13" ry="14" fill="${c.head}" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+        <!-- hair -->
+        <ellipse cx="24" cy="10" rx="13" ry="8" fill="${c.hair}"/>
+        <ellipse cx="13" cy="16" rx="5" ry="7" fill="${c.hair}"/>
+        <ellipse cx="35" cy="16" rx="5" ry="7" fill="${c.hair}"/>
+        <!-- eyes -->
+        <g style="transform-origin:18px 20px">
+          <ellipse cx="18" cy="20" rx="2.5" ry="3" fill="#2c1808"/>
+          <circle cx="19" cy="19" r="0.8" fill="white"/>
+        </g>
+        <g style="transform-origin:30px 20px">
+          <ellipse cx="30" cy="20" rx="2.5" ry="3" fill="#2c1808"/>
+          <circle cx="31" cy="19" r="0.8" fill="white"/>
+        </g>
+        <!-- blush -->
+        <ellipse cx="13" cy="24" rx="3" ry="2" fill="${c.shirt}" opacity="0.4"/>
+        <ellipse cx="35" cy="24" rx="3" ry="2" fill="${c.shirt}" opacity="0.4"/>
+        <!-- mouth (talking) -->
+        <path class="npc-talk" d="M19,27 Q24,30 29,27" stroke="#c06040" stroke-width="1.5" fill="none" stroke-linecap="round" style="animation-delay:${d+0.1}s"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
 function renderZone(z){
   const done=S.visited.has(z.key);
   const cH=z.cards.length?`<div class="sec-hdr"><div class="sec-dot" style="background:var(--teal);border-color:var(--teal2)"></div><span class="sec-label">本區知識卡</span></div><div class="icards-row">${z.cards.map(id=>{const c=CARDS[id];return`<div class="icard ${c.category}"><div class="icard-t">${c.title}</div><div class="icard-b">${c.content}</div></div>`;}).join('')}</div>`:'';
@@ -576,7 +655,7 @@ function renderZone(z){
   const ft=done?`<div class="done-msg">🌟 本區已完成探索！知識卡已加入手冊</div>`:`<button class="btn-ok" id="zok" onclick="doneZone('${z.key}')" disabled>🍀 完成「${z.label}」任務！</button>`;
   document.getElementById('zone-body').innerHTML=`
     <div class="narrative-board"><div class="narrative-text">${z.narrative}</div></div>
-    <div style="margin-bottom:16px">${z.dialogue.map(d=>`<div class="dlg-bubble"><div class="npc-face">${d.av}</div><div class="bubble"><div class="bubble-name">${d.speaker}</div><div class="bubble-txt">${d.text}</div></div></div>`).join('')}</div>
+    <div style="margin-bottom:16px">${z.dialogue.map((d,i)=>`<div class="dlg-bubble"><div class="npc-face">${npcSVG(d.av, i*0.3)}</div><div class="bubble"><div class="bubble-name">${d.speaker}</div><div class="bubble-txt">${d.text}</div></div></div>`).join('')}</div>
     ${cH}
     <div class="sec-hdr" style="margin-top:6px"><div class="sec-dot" style="background:var(--yellow);border-color:var(--yellow2)"></div><span class="sec-label">對話互動</span></div>
     ${qH}${ft}`;
