@@ -3,576 +3,1033 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新腎小島 🏝️</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<title>新腎小島 🏝️ 闖關版</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --sky: #b8e4f7;
-  --grass: #7ec850;
-  --grass2: #5aab2e;
-  --sand: #f5e6c8;
-  --wood: #c8903a;
-  --wood2: #a06828;
-  --wood-light: #e8b86a;
-  --cream: #fdf6e3;
-  --cream2: #f5ead0;
-  --cream3: #ede3c4;
-  --brown: #5c3d1e;
-  --brown2: #7a5230;
-  --text: #3d2b0e;
-  --text2: #6b4c28;
-  --text3: #967040;
-  --teal: #2bb5a0;
-  --teal2: #1d8c7a;
-  --pink: #f4a7b9;
-  --pink2: #e8829a;
-  --yellow: #f5d04a;
-  --yellow2: #e8b820;
-  --green: #52b84a;
-  --green2: #3a9030;
-  --red: #e05050;
-  --shadow: 3px 3px 0px rgba(92,61,30,0.18);
-  --shadow2: 2px 2px 0px rgba(92,61,30,0.12);
+:root{
+  --wood:#c8903a;--wood2:#a06828;--woodl:#e8b86a;
+  --cream:#fdf6e3;--cream2:#f5ead0;--cream3:#ede3c4;
+  --brown:#5c3d1e;--brown2:#7a5230;
+  --text:#3d2b0e;--text2:#6b4c28;--text3:#967040;
+  --teal:#2bb5a0;--teal2:#1d8c7a;
+  --pink:#f4a7b9;--pink2:#e8829a;
+  --yellow:#f5d04a;--yellow2:#e8b820;
+  --green:#52b84a;--green2:#3a9030;
+  --red:#e05050;--orange:#e8a050;--orange2:#c07830;
+  --purple:#a080e8;--purple2:#7858c8;
+  --sh:3px 3px 0 rgba(92,61,30,.18);--sh2:2px 2px 0 rgba(92,61,30,.12);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  font-family:'Nunito','Noto Sans TC',sans-serif;
-  background:var(--sky);color:var(--text);
-  min-height:100vh;overflow-x:hidden;position:relative;
-}
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;
-  background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 40%,#e8f5d8 70%,#c8e8a0 100%);
-}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes drift{from{transform:translateX(-220px)}to{transform:translateX(110vw)}}
-@keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-@keyframes slide-up{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-.screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;overflow-x:hidden;}
+body{font-family:'Nunito','Noto Sans TC',sans-serif;background:#b8e4f7;color:var(--text);overflow:hidden;}
+.screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;overflow-x:hidden;
+  background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 38%,#e8f5d8 68%,#c8e8a0 100%);}
 .screen.active{display:block;}
+#screen-title.active{display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
-/* ── Clouds ── */
-.cloud{position:fixed;z-index:0;background:white;border-radius:50px;opacity:0.7;animation:drift linear infinite;}
-.cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes drift{from{transform:translateX(-200px)}to{transform:translateX(110vw)}}
+@keyframes slide-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes npc-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes blink{0%,88%,100%{transform:scaleY(1)}91%,96%{transform:scaleY(.08)}}
+@keyframes talk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8) translateY(-1px)}}
+@keyframes card-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes boss-appear{from{opacity:0;transform:scale(0.6) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes key-pop{0%{transform:scale(0) rotate(-30deg);opacity:0}60%{transform:scale(1.3) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes unlock-flash{0%,100%{box-shadow:var(--sh),0 4px 0 var(--cream3)}50%{box-shadow:0 0 0 6px rgba(82,184,74,.4),var(--sh),0 4px 0 var(--cream3)}}
+@keyframes bounce-in{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes star-spin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.2)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes hp-drain{from{width:var(--prev-hp)}to{width:var(--cur-hp)}}
+@keyframes victory-bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes float-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
 
-/* ── Deco ── */
-.deco{position:fixed;z-index:0;pointer-events:none;opacity:0.65;}
+.cloud{position:fixed;z-index:0;background:#fff;border-radius:50px;opacity:.65;animation:drift linear infinite;pointer-events:none;}
+.deco{position:fixed;z-index:0;pointer-events:none;opacity:.6;animation:bob ease-in-out infinite;}
 
-/* ════ TITLE ════ */
-#screen-title{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  min-height:100vh;padding:40px 20px;text-align:center;
-  background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 40%,#e8f5d8 70%,#c8e8a0 100%);
-}
-.title-sign{
-  background:var(--wood-light);border:3px solid var(--wood2);
-  border-radius:18px;padding:22px 36px;
-  box-shadow:var(--shadow),0 6px 0 var(--wood2);
-  margin-bottom:10px;animation:bob 3s ease-in-out infinite;
-}
-.title-main{
-  display:block;font-size:clamp(30px,8vw,50px);font-weight:900;
-  color:var(--brown);letter-spacing:3px;
-  text-shadow:2px 2px 0 rgba(255,255,255,0.45);
-}
+/* ─── TITLE ─── */
+#screen-title{min-height:100vh;padding:32px 20px 60px;text-align:center;overflow-y:auto;}
+
+.title-sign{background:var(--woodl);border:3px solid var(--wood2);border-radius:18px;padding:22px 36px;box-shadow:var(--sh),0 6px 0 var(--wood2);margin-bottom:12px;animation:bob 3s ease-in-out infinite;}
+.title-main{display:block;font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--brown);letter-spacing:3px;text-shadow:2px 2px 0 rgba(255,255,255,.45);}
 .title-sub{display:block;font-size:14px;font-weight:700;color:var(--brown2);letter-spacing:1.5px;margin-top:4px;}
-.name-wrap{
-  background:var(--cream);border:3px solid var(--cream3);
-  border-radius:20px;padding:18px 24px;
-  box-shadow:var(--shadow);margin:16px 0;width:100%;max-width:320px;
-}
-.name-label{font-size:12px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
-.name-input{
-  background:var(--cream2);border:3px solid var(--cream3);
-  border-radius:12px;font-family:'Nunito',sans-serif;
-  font-size:17px;font-weight:700;color:var(--text);
-  padding:9px 14px;width:100%;text-align:center;outline:none;
-  transition:border-color .2s,box-shadow .2s;
-}
-.name-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(43,181,160,0.22);}
-.btn-start{
-  background:var(--teal);border:3px solid var(--teal2);
-  border-radius:50px;box-shadow:0 5px 0 var(--teal2);
-  color:white;font-family:'Nunito',sans-serif;
-  font-size:19px;font-weight:900;padding:13px 44px;
-  cursor:pointer;letter-spacing:2px;
-  transition:transform .1s,box-shadow .1s;
-  display:flex;align-items:center;gap:8px;
-}
+.title-badge{display:inline-block;background:var(--yellow);border:2px solid var(--yellow2);border-radius:20px;padding:3px 14px;font-size:12px;font-weight:900;color:var(--brown);margin-top:8px;box-shadow:0 2px 0 var(--yellow2);}
+.name-wrap{background:var(--cream);border:3px solid var(--cream3);border-radius:20px;padding:18px 24px;box-shadow:var(--sh);margin:14px 0;width:100%;max-width:300px;}
+.name-label{font-size:11px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.name-input{background:var(--cream2);border:3px solid var(--cream3);border-radius:12px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;color:var(--text);padding:9px 14px;width:100%;text-align:center;outline:none;transition:border-color .2s;}
+.name-input:focus{border-color:var(--teal);}
+.btn-start{background:var(--teal);border:3px solid var(--teal2);border-radius:50px;box-shadow:0 5px 0 var(--teal2);color:#fff;font-family:'Nunito',sans-serif;font-size:19px;font-weight:900;padding:13px 44px;cursor:pointer;letter-spacing:2px;transition:transform .1s,box-shadow .1s;display:flex;align-items:center;gap:8px;}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--teal2);}
 .btn-start:active{transform:translateY(4px);box-shadow:0 1px 0 var(--teal2);}
-.title-info{
-  max-width:340px;font-size:13px;font-weight:600;
-  color:var(--text2);line-height:1.9;
-  background:rgba(255,255,255,0.72);border:2px solid rgba(255,255,255,0.9);
-  border-radius:16px;padding:14px 18px;margin-top:18px;
-}
+.title-info{max-width:320px;font-size:13px;font-weight:600;color:var(--text2);line-height:1.9;background:rgba(255,255,255,.72);border:2px solid rgba(255,255,255,.9);border-radius:16px;padding:14px 18px;margin-top:16px;}
 
-/* ════ MAP ════ */
-#screen-map{padding-bottom:60px;background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 40%,#e8f5d8 70%,#c8e8a0 100%);}
-.map-header{
-  background:var(--teal);border-bottom:4px solid var(--teal2);
-  padding:13px 18px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:20;
-}
-.map-logo{font-size:19px;font-weight:900;color:white;letter-spacing:1px;text-shadow:1px 1px 0 rgba(0,0,0,0.18);}
-.player-pill{
-  background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.5);
-  border-radius:20px;padding:4px 13px;font-size:13px;font-weight:800;color:white;
-}
-.progress-bar-row{
-  background:rgba(255,255,255,0.6);border-bottom:3px solid rgba(255,255,255,0.9);
-  padding:10px 18px;display:flex;align-items:center;gap:10px;
-}
-.prog-track{flex:1;height:13px;background:rgba(0,0,0,0.1);border-radius:20px;border:2px solid rgba(0,0,0,0.07);overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--yellow));border-radius:20px;transition:width .6s cubic-bezier(0.34,1.56,0.64,1);}
-.prog-label{font-size:12px;font-weight:800;color:var(--text2);white-space:nowrap;}
+/* ─── MAP ─── */
+#screen-map{padding-bottom:60px;}
+.map-hdr{background:var(--teal);border-bottom:4px solid var(--teal2);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;}
+.map-logo{font-size:18px;font-weight:900;color:#fff;letter-spacing:1px;}
+.map-right{display:flex;align-items:center;gap:8px;}
+.player-pill{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);border-radius:20px;padding:4px 13px;font-size:13px;font-weight:800;color:#fff;}
+.btn-reset{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;transition:background .15s;}
+.btn-reset:hover{background:rgba(255,255,255,.35);}
+.btn-fontsize{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-fontsize:hover{background:rgba(255,255,255,.38);}
+.prog-row{background:rgba(255,255,255,.6);border-bottom:3px solid rgba(255,255,255,.9);padding:10px 18px;display:flex;align-items:center;gap:10px;}
+.prog-track{flex:1;height:13px;background:rgba(0,0,0,.1);border-radius:20px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--yellow));border-radius:20px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+.prog-lbl{font-size:12px;font-weight:800;color:var(--text2);white-space:nowrap;}
+
+/* KEY DISPLAY ROW */
+.key-row{background:rgba(255,255,255,.5);border-bottom:2px solid rgba(255,255,255,.8);padding:8px 18px;display:flex;align-items:center;gap:6px;}
+.key-row-lbl{font-size:11px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-right:6px;}
+.key-icon{font-size:20px;display:inline-block;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.2));}
+.key-icon.locked{filter:grayscale(1) opacity(0.35);}
+.key-count{font-size:12px;font-weight:900;color:var(--yellow2);margin-left:4px;}
+
 .map-hint{padding:14px 18px 0;text-align:center;}
-.map-hint-sign{
-  display:inline-block;background:var(--wood-light);border:2px solid var(--wood2);
-  border-radius:10px;padding:6px 18px;font-size:13px;font-weight:800;
-  color:var(--brown);box-shadow:2px 2px 0 var(--wood2);margin-bottom:14px;
-}
-.zone-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:14px;padding:14px 18px;
-}
-.ztile{
-  background:var(--cream);border:3px solid var(--cream3);
-  border-radius:22px;box-shadow:var(--shadow),0 4px 0 var(--cream3);
-  padding:16px;cursor:pointer;
-  transition:transform .15s,box-shadow .15s;
-  position:relative;overflow:hidden;
-}
+.hint-sign{display:inline-block;background:var(--woodl);border:2px solid var(--wood2);border-radius:10px;padding:6px 18px;font-size:13px;font-weight:800;color:var(--brown);box-shadow:2px 2px 0 var(--wood2);margin-bottom:12px;}
+.zone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:14px 18px;}
+.ztile{background:var(--cream);border:3px solid var(--cream3);border-radius:22px;box-shadow:var(--sh),0 4px 0 var(--cream3);padding:16px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;}
 .ztile::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:22px 22px 0 0;}
-.ztile.harbor::after{background:#64c8f0;}
-.ztile.transplant::after{background:#f5a0b8;}
-.ztile.pd::after{background:#78d878;}
-.ztile.home_hd::after{background:#f5c850;}
-.ztile.center_hd::after{background:#a090e8;}
-.ztile.plaza::after{background:#f0a060;}
-.ztile:hover:not(.locked){transform:translateY(-4px);box-shadow:var(--shadow),0 8px 0 var(--cream3);}
-.ztile.locked{opacity:0.58;cursor:not-allowed;}
+.ztile.harbor::after{background:#64c8f0;}.ztile.transplant::after{background:#f5a0b8;}
+.ztile.pd::after{background:#78d878;}.ztile.home_hd::after{background:#f5c850;}
+.ztile.center_hd::after{background:#a090e8;}.ztile.plaza::after{background:#f0a060;}
+.ztile:hover:not(.locked){transform:translateY(-4px);box-shadow:var(--sh),0 8px 0 var(--cream3);}
+.ztile.locked{opacity:.55;cursor:not-allowed;}
 .ztile.done{border-color:#a0d878;background:#f0fae8;}
-.ztile.done::before{content:'✓';position:absolute;top:11px;right:13px;font-size:17px;font-weight:900;color:var(--green);}
-.ze{font-size:38px;margin-bottom:8px;display:block;animation:bob 3s ease-in-out infinite;}
-.ztile-name{font-size:16px;font-weight:900;color:var(--brown);margin-bottom:4px;}
+.ztile.done::before{content:'✓';position:absolute;top:10px;right:12px;font-size:17px;font-weight:900;color:var(--green);}
+.ztile.unlocked-anim{animation:unlock-flash .8s ease 3;}
+.ze{font-size:36px;margin-bottom:8px;display:block;animation:bob 3s ease-in-out infinite;}
+.ztile-name{font-size:15px;font-weight:900;color:var(--brown);margin-bottom:4px;}
 .ztile-desc{font-size:12px;font-weight:600;color:var(--text2);line-height:1.7;margin-bottom:8px;}
-.ztile-npcs{font-size:11px;color:var(--text3);margin-bottom:10px;font-weight:600;}
-.zbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:20px;padding:3px 10px;}
+.ztile-npcs{font-size:11px;color:var(--text3);margin-bottom:10px;}
+.zbadge{display:inline-flex;align-items:center;font-size:11px;font-weight:800;border-radius:20px;padding:3px 10px;}
 .zbadge.done{background:#d8f0b8;color:#2a6810;border:2px solid #a0c878;}
-.zbadge.go{background:var(--teal);color:white;border:2px solid var(--teal2);}
+.zbadge.go{background:var(--teal);color:#fff;border:2px solid var(--teal2);}
 .zbadge.lock{background:var(--cream2);color:var(--text3);border:2px solid var(--cream3);}
+.zbadge.boss{background:var(--red);color:#fff;border:2px solid #c03030;animation:bob 1.5s ease-in-out infinite;}
 
-/* ════ ZONE / PLAZA ════ */
-#screen-zone,#screen-plaza{padding-bottom:60px;background:linear-gradient(180deg,#b8e4f7 0%,#d6f0fb 35%,#e8f5d8 65%,#c8e8a0 100%);}
-.zone-topbar{
-  background:var(--cream);border-bottom:4px solid var(--cream3);
-  padding:11px 16px;display:flex;align-items:center;gap:10px;
-  position:sticky;top:0;z-index:20;
-}
-.btn-back{
-  background:var(--wood-light);border:3px solid var(--wood2);border-radius:20px;
-  box-shadow:0 3px 0 var(--wood2);font-family:'Nunito',sans-serif;
-  font-size:13px;font-weight:800;color:var(--brown);padding:5px 13px;
-  cursor:pointer;transition:transform .1s,box-shadow .1s;
-}
+/* ─── ZONE HEADER ─── */
+#screen-zone,#screen-plaza{padding-bottom:60px;}
+.zone-topbar{background:var(--cream);border-bottom:4px solid var(--cream3);padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:20;}
+.btn-back{background:var(--woodl);border:3px solid var(--wood2);border-radius:20px;box-shadow:0 3px 0 var(--wood2);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--brown);padding:5px 13px;cursor:pointer;transition:transform .1s,box-shadow .1s;}
 .btn-back:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--wood2);}
 .btn-back:active{transform:translateY(2px);box-shadow:0 1px 0 var(--wood2);}
-.zone-topbar-title{font-size:16px;font-weight:900;color:var(--brown);}
-.zone-body{padding:15px;max-width:680px;margin:0 auto;}
+.topbar-title{font-size:15px;font-weight:900;color:var(--brown);flex:1;}
+.btn-zone-reset{background:rgba(232,131,109,.15);border:2px solid rgba(232,131,109,.4);border-radius:20px;padding:4px 11px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:#c06040;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-zone-reset:hover{background:rgba(232,131,109,.28);border-color:rgba(232,131,109,.7);}
+.zone-progress-bar{background:rgba(255,255,255,.5);padding:6px 16px;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:var(--text2);border-bottom:2px solid rgba(255,255,255,.7);}
+.zone-step-dots{display:flex;gap:4px;}
+.zone-step-dot{width:8px;height:8px;border-radius:50%;background:var(--cream3);border:2px solid var(--cream2);}
+.zone-step-dot.cur{background:var(--teal);border-color:var(--teal2);}
+.zone-step-dot.done{background:var(--green);border-color:var(--green2);}
+.zone-body{padding:14px;max-width:680px;margin:0 auto;}
+.narrative-board{background:var(--woodl);border:3px solid var(--wood2);border-radius:16px;box-shadow:var(--sh),0 4px 0 var(--wood2);padding:16px 18px;margin-bottom:18px;position:relative;}
+.narrative-board::before{content:'📋';position:absolute;top:-13px;left:14px;font-size:18px;background:var(--cream);border-radius:50%;padding:2px;}
+.narrative-txt{font-size:13px;font-weight:600;color:var(--brown);line-height:1.9;margin-top:4px;font-style:italic;}
+.sec-hdr{display:flex;align-items:center;gap:7px;margin:16px 0 10px;}
+.sec-dot{width:11px;height:11px;border-radius:50%;border:2px solid;}
+.sec-lbl{font-size:11px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
 
-/* Narrative board */
-.narrative-board{
-  background:var(--wood-light);border:3px solid var(--wood2);
-  border-radius:16px;box-shadow:var(--shadow),0 4px 0 var(--wood2);
-  padding:16px 18px;margin-bottom:18px;position:relative;
-}
-.narrative-board::before{content:'📋';position:absolute;top:-14px;left:14px;font-size:19px;background:var(--cream);border-radius:50%;padding:2px;}
-.narrative-text{font-size:13px;font-weight:600;color:var(--brown);line-height:1.9;margin-top:4px;font-style:italic;}
+/* ─── FLIP CARDS ─── */
+.flip-section{margin-bottom:22px;}
+.flip-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.flip-nav-label{font-size:11px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;flex:1;min-width:80px;}
+.flip-dots{display:flex;gap:5px;}
+.flip-dot{width:9px;height:9px;border-radius:50%;background:var(--cream3);border:2px solid var(--cream2);cursor:pointer;transition:all .2s;}
+.flip-dot.active{background:var(--teal);border-color:var(--teal2);transform:scale(1.25);}
+.flip-btn{background:var(--cream2);border:2px solid var(--cream3);border-radius:20px;padding:5px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;box-shadow:0 2px 0 var(--cream3);transition:all .13s;}
+.flip-btn:hover:not(:disabled){border-color:var(--teal);color:var(--teal2);}
+.flip-btn:disabled{opacity:.35;cursor:default;}
+.kcard{background:var(--cream);border:3px solid var(--cream3);border-radius:20px;overflow:hidden;animation:card-in .28s ease;position:relative;
+  box-shadow:var(--sh),0 4px 0 var(--cream3),6px 6px 0 rgba(180,160,120,.18);}
+.kcard-top{padding:18px 18px 12px;display:flex;align-items:flex-start;gap:14px;}
+.kcard-icon{width:64px;height:64px;flex-shrink:0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;}
+.kcard-icon.basic{background:#d8f4f0;border:2px solid #a8e0d8;}
+.kcard-icon.benefit{background:#ddf4d8;border:2px solid #a8d8a0;}
+.kcard-icon.caution{background:#fdf0d8;border:2px solid #e8c880;}
+.kcard-meta{flex:1;}
+.kcard-type{font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.kcard-type.basic{color:var(--teal2);}
+.kcard-type.benefit{color:var(--green2);}
+.kcard-type.caution{color:var(--orange2);}
+.kcard-title{font-size:17px;font-weight:900;color:var(--brown);line-height:1.3;}
+.kcard-divider{height:2px;background:var(--cream3);margin:0 18px;}
+.kcard-body{padding:14px 18px 18px;}
+.kcard-desc{font-size:13px;font-weight:600;color:var(--text);line-height:1.9;margin-bottom:12px;}
+.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pc-col{border-radius:12px;padding:10px 12px;}
+.pc-col.pros{background:#eaf8e4;border:2px solid #a8d8a0;}
+.pc-col.cons{background:#fef3e4;border:2px solid #e8c880;}
+.pc-hdr{font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.pc-col.pros .pc-hdr{color:var(--green2);}
+.pc-col.cons .pc-hdr{color:var(--orange2);}
+.pc-item{font-size:12px;font-weight:700;color:var(--text2);line-height:1.6;padding-left:14px;position:relative;margin-bottom:3px;}
+.pc-item::before{position:absolute;left:0;top:1px;}
+.pc-col.pros .pc-item::before{content:'✓';color:var(--green);}
+.pc-col.cons .pc-item::before{content:'!';color:var(--orange);}
+.kcard-scene{font-size:12px;font-weight:700;color:var(--teal2);background:#e8faf6;border-radius:8px;padding:6px 10px;margin-bottom:10px;line-height:1.6;}
+.kcard-scene::before{content:'🌿 生活中的樣子：';}
 
-/* Dialogue */
-.dlg-bubble{display:flex;gap:11px;margin-bottom:11px;animation:slide-up .3s ease;}
-.npc-face{width:64px;height:64px;flex-shrink:0;}
-.bubble{background:white;border:3px solid var(--cream3);border-radius:16px 16px 16px 4px;padding:10px 14px;box-shadow:var(--shadow2);flex:1;}
-.bubble-name{font-size:11px;font-weight:900;color:var(--teal2);margin-bottom:3px;text-transform:uppercase;letter-spacing:1px;}
-.bubble-txt{font-size:13px;font-weight:600;color:var(--text);line-height:1.8;}
+/* ─── BOSS BATTLE ─── */
+.boss-arena{background:linear-gradient(135deg,#1a0a30 0%,#2d1060 50%,#1a0a30 100%);border:4px solid #a080e8;border-radius:24px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(160,128,232,.4),var(--sh);}
+.boss-arena::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.boss-title-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.boss-title-badge{background:linear-gradient(135deg,#ff6060,#cc2020);border:2px solid #ff8080;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;text-shadow:1px 1px 0 rgba(0,0,0,.4);}
+.boss-title-txt{font-size:16px;font-weight:900;color:#fff;text-shadow:0 0 12px rgba(160,128,232,.8);}
+.boss-fight-row{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;}
+.boss-npc-wrap{flex-shrink:0;animation:boss-appear .5s cubic-bezier(.34,1.56,.64,1);}
+.boss-npc-wrap svg{filter:drop-shadow(0 0 8px rgba(160,128,232,.7));}
+.boss-speech-wrap{flex:1;}
+.boss-hp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.boss-hp-lbl{font-size:10px;font-weight:900;color:#ff9090;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.boss-hp-track{flex:1;height:12px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,.2);}
+.boss-hp-fill{height:100%;background:linear-gradient(90deg,#ff4444,#ff9944);border-radius:20px;transition:width .6s ease;}
+.boss-speech{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);border-radius:14px 14px 14px 4px;padding:12px 16px;backdrop-filter:blur(4px);}
+.boss-npc-name{font-size:10px;font-weight:900;color:#c0a0ff;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.boss-q{font-size:14px;font-weight:700;color:#fff;line-height:1.7;}
+.boss-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.boss-opt{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);border-radius:16px;padding:11px 16px;text-align:left;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#ffe;cursor:pointer;transition:all .15s;backdrop-filter:blur(2px);}
+.boss-opt:hover:not(:disabled){background:rgba(160,128,232,.35);border-color:#c0a0ff;color:#fff;transform:translateX(4px);}
+.boss-opt:active{transform:translateX(2px);}
+.boss-opt.correct{background:rgba(82,184,74,.3);border-color:#78d878;color:#b8ffb0;}
+.boss-opt.wrong{background:rgba(224,80,80,.3);border-color:#ff8080;color:#ffb0b0;animation:shake .4s ease;}
+.boss-opt:disabled{cursor:default;}
+.boss-feedback{margin-top:12px;background:rgba(245,208,74,.15);border:2px solid rgba(245,208,74,.4);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:#ffeea0;line-height:1.7;}
+.boss-feedback::before{content:'💡 ';}
+.boss-retry-btn{margin-top:10px;width:100%;padding:11px;background:rgba(160,128,232,.3);border:2px solid #c0a0ff;border-radius:20px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#fff;cursor:pointer;transition:all .15s;letter-spacing:1px;}
+.boss-retry-btn:hover{background:rgba(160,128,232,.5);}
 
-/* NPC SVG animations */
-@keyframes npc-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@keyframes npc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes blink{0%,90%,100%{transform:scaleY(1)}93%,97%{transform:scaleY(0.08)}}
-@keyframes mouth-talk{0%,100%{d:path("M8,9 Q12,11 16,9")}50%{d:path("M8,9 Q12,14 16,9")}}
-@keyframes tail-wag{0%,100%{transform:rotate(-8deg) translateX(0)}50%{transform:rotate(8deg) translateX(2px)}}
-.npc-body{animation:npc-sway 2s ease-in-out infinite;transform-origin:bottom center;}
-.npc-blink{animation:blink 3s ease-in-out infinite;}
-.npc-talk{animation:mouth-talk .4s ease-in-out infinite;}
+/* BOSS PROGRESS */
+.boss-progress-row{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.boss-q-pip{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:rgba(255,255,255,.4);transition:all .3s;}
+.boss-q-pip.done-ok{background:#52b84a;border-color:#78d878;color:#fff;}
+.boss-q-pip.active{background:rgba(160,128,232,.5);border-color:#c0a0ff;color:#fff;box-shadow:0 0 8px rgba(160,128,232,.6);}
+.boss-q-lbl{font-size:10px;font-weight:900;color:rgba(255,255,255,.5);margin-left:4px;}
 
-/* Info cards */
-.sec-hdr{display:flex;align-items:center;gap:7px;margin:14px 0 9px;}
-.sec-dot{width:12px;height:12px;border-radius:50%;border:2px solid;}
-.sec-label{font-size:12px;font-weight:900;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
-.icards-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
-.icard{background:white;border-radius:13px;padding:9px 11px;flex:1;min-width:120px;box-shadow:var(--shadow2);}
-.icard.benefit{border:2px solid #b8e8b0;border-top:4px solid var(--green);}
-.icard.caution{border:2px solid #f0d0a0;border-top:4px solid #e8a050;}
-.icard.basic{border:2px solid #a8dfd8;border-top:4px solid var(--teal);}
-.icard-t{font-size:11px;font-weight:900;color:var(--text);margin-bottom:3px;}
-.icard-b{font-size:11px;font-weight:600;color:var(--text2);line-height:1.6;}
+/* VICTORY SCREEN */
+.victory-overlay{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1d5a30,#2d8c50,#1d5a30);background-size:400% 400%;animation:victory-bg 3s ease infinite;padding:20px;}
+.victory-card{background:var(--cream);border:4px solid var(--yellow2);border-radius:28px;padding:32px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 40px rgba(245,208,74,.5),var(--sh),0 8px 0 var(--wood2);animation:bounce-in .5s cubic-bezier(.34,1.56,.64,1);}
+.victory-emoji{font-size:60px;display:block;margin-bottom:8px;animation:star-spin 2s ease-in-out infinite;}
+.victory-title{font-size:22px;font-weight:900;color:var(--brown);margin-bottom:6px;}
+.victory-sub{font-size:14px;font-weight:700;color:var(--text2);line-height:1.7;margin-bottom:20px;}
+.key-reward{display:flex;flex-direction:column;align-items:center;gap:8px;background:linear-gradient(135deg,#fff8e0,#ffe88a);border:3px solid var(--yellow2);border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:0 4px 0 var(--yellow2);}
+.key-reward-icon{font-size:52px;animation:key-pop .6s cubic-bezier(.34,1.56,.64,1) forwards;}
+.key-reward-txt{font-size:15px;font-weight:900;color:var(--brown);}
+.key-reward-sub{font-size:12px;font-weight:700;color:var(--text2);}
+.btn-continue{background:var(--teal);border:3px solid var(--teal2);border-radius:50px;box-shadow:0 5px 0 var(--teal2);color:#fff;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;padding:14px 36px;cursor:pointer;letter-spacing:2px;transition:transform .1s,box-shadow .1s;width:100%;}
+.btn-continue:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--teal2);}
+.btn-continue:active{transform:translateY(4px);box-shadow:0 1px 0 var(--teal2);}
+.victory-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.particle{position:absolute;font-size:24px;animation:float-up 1.5s ease forwards;}
 
-/* Questions */
-.q-block{margin-bottom:16px;}
-.q-txt{background:white;border:2px solid var(--cream3);border-radius:13px;padding:11px 13px;margin-bottom:9px;font-size:13px;font-weight:700;color:var(--text);line-height:1.7;box-shadow:var(--shadow2);}
-.opts{display:flex;flex-direction:column;gap:6px;}
-.opt{
-  background:var(--cream2);border:2px solid var(--cream3);border-radius:20px;
-  padding:8px 15px;text-align:left;font-family:'Nunito',sans-serif;
-  font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;
-  box-shadow:0 2px 0 var(--cream3);transition:all .13s;
-}
-.opt:hover:not(:disabled){background:var(--teal);border-color:var(--teal2);color:white;box-shadow:0 3px 0 var(--teal2);transform:translateY(-1px);}
-.opt.sel{background:var(--teal);border-color:var(--teal2);color:white;box-shadow:0 2px 0 var(--teal2);}
+/* ─── NPC Q&A (偏好對話) ─── */
+.qa-block{background:#fff;border:2px solid var(--cream3);border-radius:18px;box-shadow:var(--sh2);margin-bottom:14px;overflow:hidden;}
+.qa-npc-row{display:flex;align-items:flex-end;gap:0;padding:14px 14px 0;}
+.qa-npc-svg{flex-shrink:0;width:58px;animation:bob 2.5s ease-in-out infinite;}
+.qa-speech{background:var(--cream2);border:2px solid var(--cream3);border-radius:14px 14px 14px 4px;padding:10px 14px;flex:1;margin-left:10px;margin-bottom:4px;}
+.qa-npc-name{font-size:10px;font-weight:900;color:var(--teal2);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.qa-q-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.7;}
+.qa-opts{padding:10px 14px 14px;display:flex;flex-direction:column;gap:6px;}
+.opt{background:var(--cream2);border:2px solid var(--cream3);border-radius:20px;padding:10px 16px;text-align:left;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;
+  box-shadow:0 4px 0 var(--cream3),0 6px 12px rgba(92,61,30,.12);
+  transition:all .12s;position:relative;}
+.opt:hover:not(:disabled){background:var(--teal);border-color:var(--teal2);color:#fff;box-shadow:0 5px 0 var(--teal2),0 8px 16px rgba(43,181,160,.2);transform:translateY(-2px);}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--teal2);}
+.opt.sel{background:var(--teal);border-color:var(--teal2);color:#fff;box-shadow:0 3px 0 var(--teal2),0 5px 12px rgba(43,181,160,.18);transform:translateY(1px);}
 .opt:disabled{opacity:.65;cursor:default;}
-
-.btn-ok{
-  width:100%;padding:14px;background:var(--green);border:3px solid var(--green2);
-  border-radius:50px;box-shadow:0 5px 0 var(--green2);
-  font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;
-  color:white;cursor:pointer;letter-spacing:1px;
-  transition:transform .1s,box-shadow .1s;margin-top:12px;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-}
+.btn-ok{width:100%;padding:14px;background:var(--green);border:3px solid var(--green2);border-radius:50px;box-shadow:0 5px 0 var(--green2);font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:1px;transition:transform .1s,box-shadow .1s;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;}
 .btn-ok:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 0 var(--green2);}
 .btn-ok:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--green2);}
 .btn-ok:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:0 5px 0 var(--green2);}
 .done-msg{text-align:center;padding:13px;font-size:13px;font-weight:900;color:var(--teal2);background:#e8faf5;border:2px solid #a0e0d0;border-radius:13px;}
 
-/* Plaza */
-.jgroup{margin-bottom:22px;}
-.jgroup-title{font-size:13px;font-weight:900;color:var(--brown);background:var(--wood-light);border:2px solid var(--wood2);border-radius:9px;padding:4px 13px;display:inline-block;box-shadow:2px 2px 0 var(--wood2);margin-bottom:9px;}
-.jcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:7px;}
-.jcard{background:white;border-radius:13px;padding:9px 11px;box-shadow:var(--shadow2);}
-.jcard.benefit{border:2px solid #b8e8b0;border-top:4px solid var(--green);}
-.jcard.caution{border:2px solid #f0d0a0;border-top:4px solid #e8a050;}
-.jcard.basic{border:2px solid #a8dfd8;border-top:4px solid var(--teal);}
-.jcard-t{font-size:11px;font-weight:900;color:var(--text);margin-bottom:3px;}
-.jcard-b{font-size:11px;font-weight:600;color:var(--text2);line-height:1.6;}
+/* ─── BOSS CHALLENGE NOTICE ─── */
+.boss-notice{background:linear-gradient(135deg,#2d1060,#1a0a30);border:3px solid #a080e8;border-radius:20px;padding:18px;margin-bottom:18px;text-align:center;box-shadow:0 0 20px rgba(160,128,232,.3),var(--sh);}
+.boss-notice-title{font-size:16px;font-weight:900;color:#fff;margin-bottom:6px;text-shadow:0 0 10px rgba(160,128,232,.8);}
+.boss-notice-sub{font-size:12px;font-weight:700;color:#c0a0ff;line-height:1.7;margin-bottom:14px;}
+.boss-notice-rules{display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:16px;}
+.boss-rule{font-size:12px;font-weight:700;color:#e0d0ff;padding-left:20px;position:relative;line-height:1.6;}
+.boss-rule::before{position:absolute;left:0;}
+.boss-rule.rule-read::before{content:'📚';}
+.boss-rule.rule-ans::before{content:'⚔️';}
+.boss-rule.rule-retry::before{content:'🔄';}
+.boss-rule.rule-key::before{content:'🗝️';}
+.btn-boss-start{width:100%;padding:13px;background:linear-gradient(135deg,#8050d0,#6030a8);border:3px solid #c0a0ff;border-radius:50px;box-shadow:0 5px 0 #5030a0,0 0 20px rgba(160,128,232,.4);font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:2px;transition:transform .1s,box-shadow .1s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-boss-start:hover{transform:translateY(-2px);box-shadow:0 7px 0 #5030a0,0 0 28px rgba(160,128,232,.5);}
+.btn-boss-start:active{transform:translateY(4px);box-shadow:0 1px 0 #5030a0;}
 
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
-.chip{background:var(--cream2);border:2px solid var(--cream3);border-radius:20px;padding:6px 13px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .13s;box-shadow:0 2px 0 var(--cream3);user-select:none;}
-.chip:hover:not(.chip-off){border-color:var(--yellow2);color:var(--brown);transform:translateY(-1px);}
-.chip.chip-on{background:var(--yellow);border-color:var(--yellow2);color:var(--brown);box-shadow:0 2px 0 var(--yellow2);}
-.chip.chip-off{opacity:.38;cursor:not-allowed;}
-
-.qitem{margin-bottom:15px;}
-.q-q{font-size:13px;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.7;}
-.q-q::before{content:'🌿 ';}
+/* ─── PLAZA ─── */
+.plaza-visited{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.pv-chip{display:flex;align-items:center;gap:5px;background:var(--cream);border:2px solid var(--cream3);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;color:var(--text2);box-shadow:var(--sh2);}
+.pv-chip.done{background:#eaf8e4;border-color:#a8d8a0;color:#2a6810;}
+.pv-dot{width:8px;height:8px;border-radius:50%;}
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px;}
+.val-btn{background:var(--cream2);border:2px solid var(--cream3);border-radius:14px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;text-align:center;box-shadow:0 2px 0 var(--cream3);transition:all .13s;line-height:1.4;}
+.val-btn:hover:not(.val-off){border-color:var(--yellow2);color:var(--brown);}
+.val-btn.val-on{background:var(--yellow);border-color:var(--yellow2);color:var(--brown);box-shadow:0 2px 0 var(--yellow2);}
+.val-btn.val-off{opacity:.38;cursor:not-allowed;}
+.quiz-wrap{background:#fff;border:2px solid var(--cream3);border-radius:16px;padding:14px;box-shadow:var(--sh2);margin-bottom:14px;}
+.quiz-q-txt{font-size:13px;font-weight:700;color:var(--text);margin-bottom:9px;line-height:1.6;}
 .qbtns{display:flex;gap:7px;flex-wrap:wrap;}
 .qbtn{background:var(--cream2);border:2px solid var(--cream3);border-radius:20px;padding:6px 13px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--text2);cursor:pointer;box-shadow:0 2px 0 var(--cream3);transition:all .13s;}
 .qbtn:hover:not(:disabled){border-color:var(--teal);color:var(--teal2);}
 .qbtn.qok{background:#d8f0b8;border-color:var(--green);color:#2a7010;box-shadow:0 2px 0 var(--green);}
 .qbtn.qno{background:#fde8e8;border-color:var(--red);color:var(--red);}
-.qfb{font-size:11px;font-weight:700;color:var(--text2);margin-top:6px;line-height:1.6;}
+.qfb{font-size:11px;font-weight:700;color:var(--text2);margin-top:7px;line-height:1.6;padding-left:4px;}
 .qfb::before{content:'💡 ';}
-
-.result-board{
-  background:var(--cream);border:3px solid var(--wood2);border-radius:20px;
-  box-shadow:var(--shadow),0 5px 0 var(--wood2);padding:22px;margin-bottom:14px;position:relative;
-}
+.result-board{background:var(--cream);border:3px solid var(--wood2);border-radius:20px;box-shadow:var(--sh),0 5px 0 var(--wood2);padding:20px;margin-bottom:14px;position:relative;}
 .result-board::before{content:'🏆';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:26px;}
-.result-title{font-size:17px;font-weight:900;color:var(--brown);margin-bottom:11px;line-height:1.5;padding-top:8px;text-align:center;}
-.rline{font-size:13px;font-weight:700;color:var(--text2);line-height:1.9;margin-bottom:4px;display:flex;gap:5px;}
-.rline::before{content:'🌱';flex-shrink:0;font-size:12px;}
-.rtags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.result-title{font-size:16px;font-weight:900;color:var(--brown);margin-bottom:10px;line-height:1.5;padding-top:6px;text-align:center;}
+.result-summary{font-size:13px;font-weight:600;color:var(--text2);line-height:1.8;margin-bottom:12px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:10px;}
+.result-dir-box{background:#eaf8e4;border:2px solid #a8d8a0;border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.result-dir-lbl{font-size:10px;font-weight:900;color:var(--green2);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.result-dir-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.7;}
+.result-advice-box{background:#fff8e8;border:2px solid var(--yellow2);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.result-advice-lbl{font-size:10px;font-weight:900;color:var(--orange2);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.result-advice-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.7;}
+.result-reco-row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 4px;}
+.reco-pill{background:var(--teal);border:2px solid var(--teal2);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:900;box-shadow:0 2px 0 var(--teal2);}
+.reco-pill.second{background:var(--cream2);border-color:var(--cream3);color:var(--text2);box-shadow:0 2px 0 var(--cream3);}
+.rtags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
 .rtag{background:var(--yellow);border:2px solid var(--yellow2);color:var(--brown);border-radius:20px;padding:3px 11px;font-size:11px;font-weight:900;box-shadow:0 2px 0 var(--yellow2);}
-.rreco{background:rgba(43,181,160,0.1);border:2px solid rgba(43,181,160,0.3);border-radius:13px;padding:11px 13px;margin-top:11px;}
-.rreco-lbl{font-size:11px;font-weight:900;color:var(--teal2);margin-bottom:4px;letter-spacing:1px;}
-.rreco-val{font-size:13px;font-weight:800;color:var(--text);}
-.radar-c{display:flex;justify-content:center;margin:14px 0;}
-.disclaimer{background:#fff8e8;border:2px solid var(--yellow2);border-radius:13px;padding:11px 15px;font-size:12px;font-weight:700;color:var(--text2);line-height:1.8;margin-bottom:14px;}
+.radar-c{display:flex;flex-direction:column;align-items:center;margin:12px 0;}
+.radar-legend{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text3);margin-top:6px;}
+.radar-legend-dot{width:10px;height:10px;border-radius:50%;background:#2bb5a0;}
+.disclaimer{background:#fff8e8;border:2px solid var(--yellow2);border-radius:13px;padding:10px 14px;font-size:11px;font-weight:700;color:var(--text2);line-height:1.7;margin-bottom:14px;}
 .disclaimer::before{content:'⚠️ ';}
-.btn-dl{
-  width:100%;padding:13px;background:var(--pink);border:3px solid var(--pink2);
-  border-radius:50px;box-shadow:0 5px 0 var(--pink2);
-  font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;
-  color:white;cursor:pointer;letter-spacing:1px;
-  transition:transform .1s,box-shadow .1s;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-}
+.radar-annotation{font-size:12px;font-weight:700;color:var(--text2);text-align:center;padding:8px 14px;background:rgba(255,255,255,.6);border-radius:10px;margin-top:8px;line-height:1.6;}
+.btn-dl{width:100%;padding:13px;background:var(--pink);border:3px solid var(--pink2);border-radius:50px;box-shadow:0 5px 0 var(--pink2);font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:1px;transition:transform .1s,box-shadow .1s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .btn-dl:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--pink2);}
 .btn-dl:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pink2);}
+.btn-print{width:100%;padding:13px;background:#5090e0;border:3px solid #3070c0;border-radius:50px;box-shadow:0 5px 0 #3070c0;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:1px;transition:transform .1s,box-shadow .1s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px;}
+.btn-print:hover{transform:translateY(-2px);box-shadow:0 7px 0 #3070c0;}
 
-/* Toast */
+/* KEYS CHEST */
+.keys-collected-box{background:linear-gradient(135deg,#fff8e0,#ffe88a);border:3px solid var(--yellow2);border-radius:20px;padding:16px 20px;margin-bottom:18px;box-shadow:0 4px 0 var(--yellow2),var(--sh);}
+.keys-collected-title{font-size:11px;font-weight:900;color:var(--brown);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.keys-row{display:flex;gap:10px;flex-wrap:wrap;}
+.key-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.key-slot-icon{font-size:28px;display:block;}
+.key-slot-icon.empty{filter:grayscale(1) opacity(0.3);}
+.key-slot-lbl{font-size:10px;font-weight:800;color:var(--text2);text-align:center;max-width:54px;line-height:1.3;}
+
+/* TOAST */
 .toast-wrap{position:fixed;bottom:22px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:100;}
-.toast{background:var(--teal);border:3px solid var(--teal2);border-radius:50px;box-shadow:0 4px 0 var(--teal2),0 8px 18px rgba(0,0,0,0.18);color:white;font-size:14px;font-weight:800;padding:9px 22px;transform:translateY(80px);transition:transform .4s cubic-bezier(0.34,1.56,0.64,1);}
+.toast{background:var(--teal);border:3px solid var(--teal2);border-radius:50px;box-shadow:0 4px 0 var(--teal2);color:#fff;font-size:14px;font-weight:800;padding:9px 22px;transform:translateY(80px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
 .toast.show{transform:translateY(0);}
 
-@media(max-width:480px){.zone-grid{grid-template-columns:1fr;}.jcards{grid-template-columns:1fr 1fr;}}
+
+/* FAMILY BOX */
+.family-box{background:#f0f8ff;border:2px solid #a8c8f0;border-radius:16px;padding:16px 18px;margin-bottom:14px;}
+.family-box-title{font-size:11px;font-weight:900;color:#3070c0;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.family-box-body{font-size:13px;font-weight:600;color:var(--text2);line-height:1.8;}
+.family-questions{margin-top:10px;}
+.family-q{font-size:12px;font-weight:800;color:#3070c0;padding:5px 0 5px 14px;position:relative;border-bottom:1px solid #d0e4f8;}
+.family-q::before{content:'？';position:absolute;left:0;color:#a8c8f0;}
+.family-q:last-child{border-bottom:none;}
+
+/* PHASE TRANSITION */
+.phase-banner{background:linear-gradient(135deg,#1d5a30,#3a9050);border:3px solid #78d878;border-radius:18px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 0 #2a7030,var(--sh);}
+.phase-banner-icon{font-size:28px;flex-shrink:0;}
+.phase-banner-txt{font-size:13px;font-weight:900;color:#fff;line-height:1.6;}
+.phase-banner-sub{font-size:11px;font-weight:700;color:#a0f0a0;margin-top:2px;}
+
+@media(max-width:480px){.zone-grid{grid-template-columns:1fr;}.pc-grid{grid-template-columns:1fr;}}
+body.large-font .opt,.large-font .qa-q-txt,.large-font .kcard-desc,.large-font .kcard-title,.large-font .boss-q,.large-font .boss-opt{font-size:15px!important;}
+
+@media print{
+  .screen{position:static!important;display:block!important;}
+  #screen-title,#screen-map,#screen-zone,#screen-plaza{display:none!important;}
+  #print-area{display:block!important;}
+  .cloud,.deco,.toast-wrap{display:none!important;}
+}
+#print-area{display:none;padding:20px;}
 </style>
 </head>
 <body>
 
 <!-- Clouds -->
-<div class="cloud" style="width:80px;height:26px;top:7%;animation-duration:30s;animation-delay:-6s"><div style="position:absolute;width:42px;height:42px;border-radius:50%;background:white;top:-22px;left:14px"></div><div style="position:absolute;width:28px;height:28px;border-radius:50%;background:white;top:-12px;left:40px"></div></div>
-<div class="cloud" style="width:58px;height:20px;top:16%;animation-duration:38s;animation-delay:-15s"><div style="position:absolute;width:30px;height:30px;border-radius:50%;background:white;top:-16px;left:10px"></div></div>
-<div class="cloud" style="width:100px;height:30px;top:4%;animation-duration:44s;animation-delay:-22s"><div style="position:absolute;width:52px;height:52px;border-radius:50%;background:white;top:-28px;left:18px"></div><div style="position:absolute;width:36px;height:36px;border-radius:50%;background:white;top:-18px;left:52px"></div></div>
+<div class="cloud" style="width:80px;height:26px;top:7%;animation-duration:12s;animation-delay:-2s"><div style="position:absolute;width:42px;height:42px;border-radius:50%;background:#fff;top:-22px;left:14px"></div><div style="position:absolute;width:28px;height:28px;border-radius:50%;background:#fff;top:-12px;left:40px"></div></div>
+<div class="cloud" style="width:50px;height:18px;top:20%;animation-duration:9s;animation-delay:-4s"><div style="position:absolute;width:28px;height:28px;border-radius:50%;background:#fff;top:-15px;left:8px"></div></div>
+<div class="cloud" style="width:100px;height:30px;top:4%;animation-duration:15s;animation-delay:-7s"><div style="position:absolute;width:52px;height:52px;border-radius:50%;background:#fff;top:-28px;left:18px"></div><div style="position:absolute;width:36px;height:36px;border-radius:50%;background:#fff;top:-18px;left:52px"></div></div>
+<div class="cloud" style="width:64px;height:22px;top:12%;animation-duration:10s;animation-delay:-1s"><div style="position:absolute;width:34px;height:34px;border-radius:50%;background:#fff;top:-18px;left:10px"></div><div style="position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:-10px;left:36px"></div></div>
+<div class="deco" style="bottom:13%;left:2%;font-size:22px;animation-duration:2.6s">🌸</div>
+<div class="deco" style="bottom:10%;left:7%;font-size:20px;animation-duration:3.1s;animation-delay:.5s">🌻</div>
+<div class="deco" style="bottom:17%;right:3%;font-size:22px;animation-duration:2.9s;animation-delay:.9s">🌺</div>
+<div class="deco" style="bottom:9%;right:8%;font-size:20px;animation-duration:3.3s;animation-delay:.2s">🌼</div>
+<div class="deco" style="bottom:21%;left:13%;font-size:16px;animation-duration:2.4s;animation-delay:1.1s">🍄</div>
+<div class="deco" style="bottom:23%;right:13%;font-size:16px;animation-duration:2.7s;animation-delay:.7s">🌴</div>
 
-<!-- Deco flowers -->
-<div class="deco" style="bottom:14%;left:2%;font-size:22px;animation:bob 2.6s ease-in-out infinite">🌸</div>
-<div class="deco" style="bottom:11%;left:7%;font-size:20px;animation:bob 3.1s ease-in-out infinite .5s">🌻</div>
-<div class="deco" style="bottom:17%;right:3%;font-size:22px;animation:bob 2.9s ease-in-out infinite .9s">🌺</div>
-<div class="deco" style="bottom:9%;right:8%;font-size:20px;animation:bob 3.3s ease-in-out infinite .2s">🌼</div>
-<div class="deco" style="bottom:20%;left:14%;font-size:16px;animation:bob 2.4s ease-in-out infinite 1.1s">🍄</div>
-<div class="deco" style="bottom:22%;right:14%;font-size:16px;animation:bob 2.7s ease-in-out infinite .7s">🌴</div>
-
-<!-- ══ TITLE ══ -->
+<!-- TITLE -->
 <div id="screen-title" class="screen active">
-  <div class="title-sign">
-    <span class="title-main">🏝️ 新腎小島</span>
-    <span class="title-sub">腎臟替代治療探索之旅</span>
-  </div>
-  <div class="name-wrap">
-    <div class="name-label">你的島民稱呼</div>
-    <input id="name-inp" class="name-input" type="text" placeholder="旅人" maxlength="10">
-  </div>
+  <div class="title-sign"><span class="title-main">🏝️ 新腎小島</span><span class="title-sub">腎臟替代治療探索之旅</span></div>
+  <div class="title-badge">⚔️ 闖關版 — 挑戰關主，收集鑰匙！</div>
+  <div class="name-wrap"><div class="name-label">你的島民稱呼</div><input id="name-inp" class="name-input" type="text" placeholder="旅人" maxlength="10"></div>
   <button class="btn-start" onclick="startGame()">🍃 出發探島！</button>
-  <div class="title-info">
-    🌱 這不是要你立刻做決定的地方<br>
-    探索六個區域、與島民對話、蒐集知識卡，<br>
-    慢慢整理你目前最在意的方向。<br><br>
-    <strong style="color:var(--teal2)">建議與醫療團隊和家人一起閱讀摘要。</strong>
-  </div>
+  <div class="title-info">🌱 在每個區域，先閱讀知識卡，<br>再挑戰關主的知識問題！<br>闖關成功可獲得鑰匙 🗝️，集滿五把才能進入決策廣場。<br><br><strong style="color:var(--teal2)">答錯沒關係，看完解說再試一次！</strong></div>
 </div>
 
-<!-- ══ MAP ══ -->
+<!-- PRINT AREA -->
+<div id="print-area"></div>
+
+<!-- MAP -->
 <div id="screen-map" class="screen">
-  <div class="map-header">
+  <div class="map-hdr">
     <span class="map-logo">🏝️ 新腎小島</span>
-    <span class="player-pill" id="map-pname"></span>
+    <div class="map-right">
+      <span class="player-pill" id="map-pname"></span>
+      <button class="btn-fontsize" onclick="toggleFont()" id="font-btn">A+ 大字</button>
+      <button class="btn-reset" onclick="resetGame()">↩ 重新開始</button>
+    </div>
   </div>
-  <div class="progress-bar-row">
-    <span class="prog-label" id="prog-lbl">探索進度</span>
-    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    <span class="prog-label" id="card-cnt">0 張卡</span>
-  </div>
-  <div class="map-hint"><div class="map-hint-sign">🗺️ 點選區域開始探索吧！</div></div>
+  <div class="prog-row"><span class="prog-lbl" id="prog-lbl">探索進度</span><div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div><span class="prog-lbl" id="card-cnt">0 區</span></div>
+  <div class="key-row" id="key-row"></div>
+  <div class="map-hint"><div class="hint-sign">🗺️ 點選區域開始探索！集滿 5 把鑰匙解鎖廣場</div></div>
   <div class="zone-grid" id="zone-grid"></div>
 </div>
 
-<!-- ══ ZONE ══ -->
+<!-- ZONE -->
 <div id="screen-zone" class="screen">
-  <div class="zone-topbar">
-    <button class="btn-back" onclick="showMap()">← 回地圖</button>
-    <span class="zone-topbar-title" id="zone-title"></span>
-  </div>
+  <div class="zone-topbar"><button class="btn-back" onclick="showMap()">← 回地圖</button><span class="topbar-title" id="zone-title"></span><button class="btn-zone-reset" onclick="resetZone()">↩ 重設本關</button></div>
+  <div class="zone-progress-bar" id="zone-progress-bar"></div>
   <div class="zone-body" id="zone-body"></div>
 </div>
 
-<!-- ══ PLAZA ══ -->
+<!-- PLAZA -->
 <div id="screen-plaza" class="screen">
-  <div class="zone-topbar">
-    <button class="btn-back" onclick="showMap()">← 回地圖</button>
-    <span class="zone-topbar-title">🧭 決策廣場</span>
-  </div>
+  <div class="zone-topbar"><button class="btn-back" onclick="showMap()">← 回地圖</button><span class="topbar-title">🧭 決策廣場</span><button class="btn-zone-reset" onclick="resetPlaza()">↩ 重設廣場</button></div>
   <div class="zone-body" id="plaza-body"></div>
+</div>
+
+<!-- VICTORY OVERLAY -->
+<div id="victory-overlay" class="victory-overlay" style="display:none;">
+  <div class="victory-particles" id="victory-particles"></div>
+  <div class="victory-card">
+    <span class="victory-emoji" id="victory-emoji">🗝️</span>
+    <div class="victory-title" id="victory-title">關卡攻略！</div>
+    <div class="victory-sub" id="victory-sub">你成功打敗了關主！</div>
+    <div class="key-reward">
+      <span class="key-reward-icon" id="key-reward-icon">🗝️</span>
+      <div class="key-reward-txt" id="key-reward-txt">獲得鑰匙！</div>
+      <div class="key-reward-sub" id="key-reward-sub">收集所有鑰匙可解鎖決策廣場</div>
+    </div>
+    <button class="btn-continue" id="victory-continue-btn">繼續探索 →</button>
+  </div>
 </div>
 
 <div class="toast-wrap"><div class="toast" id="toast"></div></div>
 
 <script>
-const CARDS={
-  value_safety:{id:'value_safety',title:'我重視安心感',content:'希望治療時有較多支持，若出現不舒服能即時處理。',category:'basic',group:'player_values'},
-  value_flexibility:{id:'value_flexibility',title:'我重視生活彈性',content:'希望治療能盡量與生活節奏整合。',category:'basic',group:'player_values'},
-  value_autonomy:{id:'value_autonomy',title:'我重視自主參與',content:'願意學習並參與自己的治療與照護。',category:'basic',group:'player_values'},
-  value_fear_needles:{id:'value_fear_needles',title:'我怕打針或看到血',content:'對針刺、看到血液容易感到不安。',category:'caution',group:'player_values'},
-  value_family:{id:'value_family',title:'家庭支持很重要',content:'治療選擇會受到家人是否能一起支持而影響。',category:'basic',group:'player_values'},
-  value_more_info:{id:'value_more_info',title:'我還需要更多資訊',content:'仍在整理想法，想進一步比較不同方式。',category:'basic',group:'player_values'},
-  tx_basic:{id:'tx_basic',title:'腎臟移植是什麼？',content:'透過手術將健康腎臟植入體內，代替受損的腎臟功能。',category:'basic',group:'transplant'},
-  tx_bq:{id:'tx_bq',title:'生活品質可能較佳',content:'對不少病人來說，移植後生活品質通常可能較接近一般日常。',category:'benefit',group:'transplant'},
-  tx_bs:{id:'tx_bs',title:'長期存活率通常較佳',content:'整體而言，腎臟移植的長期存活率通常優於長期透析。',category:'benefit',group:'transplant'},
-  tx_cw:{id:'tx_cw',title:'需要等待合適腎源',content:'需要有合適捐贈來源，等待時間可能較長。',category:'caution',group:'transplant'},
-  tx_cd:{id:'tx_cd',title:'移植後需長期服藥',content:'移植後需長期服用抗排斥藥物，並規律追蹤。',category:'caution',group:'transplant'},
-  pd_basic:{id:'pd_basic',title:'腹膜透析是什麼？',content:'利用腹膜作為透析膜，在家中按時換液。',category:'basic',group:'peritoneal_dialysis'},
-  pd_h:{id:'pd_h',title:'可在家中進行',content:'腹膜透析通常可在家完成，不需每週多次往返透析中心。',category:'benefit',group:'peritoneal_dialysis'},
-  pd_f:{id:'pd_f',title:'生活安排較有彈性',content:'相較固定到院透析，通常較能配合個人作息。',category:'benefit',group:'peritoneal_dialysis'},
-  pd_d:{id:'pd_d',title:'每天都要規律處理',content:'需要每日換液，治療會成為生活的一部分。',category:'caution',group:'peritoneal_dialysis'},
-  pd_i:{id:'pd_i',title:'要注意腹膜炎風險',content:'腹膜炎是重要併發症之一，清潔照護非常重要。',category:'caution',group:'peritoneal_dialysis'},
-  hh_basic:{id:'hh_basic',title:'居家血液透析是什麼？',content:'在家中進行血液透析，醫護端可遠端監測。',category:'basic',group:'home_hd'},
-  hh_f:{id:'hh_f',title:'時間安排較有彈性',content:'可依身體情況調整透析時間與次數。',category:'benefit',group:'home_hd'},
-  hh_s:{id:'hh_s',title:'透析過程可能較平穩',content:'較長時間、較頻繁的透析，可能讓過程更平穩。',category:'benefit',group:'home_hd'},
-  hh_sp:{id:'hh_sp',title:'需要設備與空間',content:'家中需準備 RO 水處理設備與耗材儲存空間。',category:'caution',group:'home_hd'},
-  hh_t:{id:'hh_t',title:'需要完整訓練',content:'病人與照顧者需接受訓練，熟悉操作流程。',category:'caution',group:'home_hd'},
-  ch_basic:{id:'ch_basic',title:'院所血液透析是什麼？',content:'在醫院或透析診所，通常每週 3 次、每次約 4 小時。',category:'basic',group:'center_hd'},
-  ch_s:{id:'ch_s',title:'有專業醫護協助',content:'治療由護理師與醫療團隊協助，安心感較高。',category:'benefit',group:'center_hd'},
-  ch_e:{id:'ch_e',title:'緊急情況可即時處理',content:'若透析中出現不適，現場通常可立即處理。',category:'benefit',group:'center_hd'},
-  ch_sc:{id:'ch_sc',title:'需固定到院',content:'需固定時間往返醫院，對時間安排可能造成負擔。',category:'caution',group:'center_hd'},
-  ch_fat:{id:'ch_fat',title:'透析後可能疲憊',content:'有些病人在透析後感到疲勞或血壓波動。',category:'caution',group:'center_hd'},
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const ZONE_CARDS={
+  harbor:[
+    {icon:'🏝️',type:'basic',title:'什麼是腎臟替代治療？',
+     scene:'當腎臟無法正常工作時，替代治療讓生活可以繼續——很多人仍然工作、旅遊、照顧家人。',
+     desc:'當腎臟功能嚴重衰退，無法維持身體正常運作時，需要選擇一種「替代」腎臟功能的方式。目前主要有三大類：透析治療（包括血液透析與腹膜透析）和腎臟移植。每種方式各有特點，沒有絕對的好壞，最適合你的才是最好的選擇。',
+     pros:['有多種方式可以選擇','可依個人生活狀況調整','醫療團隊會全程協助評估'],
+     cons:['每種方式都需要學習適應','選擇過程可能需要時間','家庭與生活條件也是考量因素']},
+    {icon:'🔄',type:'basic',title:'三大治療方向概覽',
+     scene:'這座島的五個區域，分別對應三大治療方向。帶著好奇心走一遍，不需要急著決定。',
+     desc:'血液透析：利用機器過濾血液，分為每週固定到院的「院所血液透析」，和在家自己操作的「居家血液透析」。腹膜透析：利用腹腔內的薄膜過濾，每天在家換液，不需到院。腎臟移植：接受捐贈腎臟手術，成功後可能恢復接近正常的生活。',
+     pros:['透析與移植可以依序考量','部分人可以從一種換到另一種'],
+     cons:['各方式的適用條件不同','需要醫師評估後才能確認選項']},
+    {icon:'🗺️',type:'benefit',title:'如何使用這座島？',
+     scene:'探索沒有時間壓力，隨時可以回到地圖、重新閱讀，或是帶著問題去問醫師。',
+     desc:'這座島的設計是：先閱讀每個區域的知識卡，了解基本概念；再回答關主的問題，確認你真的讀進去了；最後在決策廣場整理你最在意的事，產生一份可以帶去門診討論的個人摘要。答錯沒有懲罰——看完解說再試一次就好！',
+     pros:['隨時可以重新探索','摘要可以列印或下載帶去門診','沒有對錯，只有最適合你的答案'],
+     cons:['本島內容僅供學習參考','最終治療選擇請與醫療團隊討論']},
+  ],
+  transplant:[
+    {icon:'🏥',type:'basic',title:'什麼是腎臟移植？',
+     scene:'手術後，許多人可以恢復正常上班、出遊，不再需要每週到院透析。',
+     desc:'將健康捐贈者的腎臟，透過手術放入你的身體，讓它代替原本受損的腎臟工作。成功後，你的身體會有一顆可以正常運作的腎臟，生活可能接近一般人。',
+     pros:['生活品質通常較接近一般人','長期存活率通常優於透析','不需要每週定期透析'],
+     cons:['需要等待合適的捐贈腎臟','需要接受手術，有風險','術後需長期服用抗排斥藥']},
+    {icon:'⏳',type:'caution',title:'等待腎源需要時間',
+     scene:'等待期間仍需透析，生活節奏不會停下來，很多人照常工作和照顧家人。',
+     desc:'腎臟移植需要配對到合適的捐贈者。等待時間因人而異，可能需要數年。等待期間通常需要同時進行透析治療來維持身體狀況。',
+     pros:['可以事先評估與身體準備','等待期間仍可正常生活'],
+     cons:['等待時間無法確定','配對條件嚴格，並非人人適合']},
+    {icon:'💊',type:'caution',title:'移植後的長期照護',
+     scene:'每天早上吃藥就像刷牙一樣，成為生活的一部分。每三個月到門診追蹤一次。',
+     desc:'移植成功後，需要每天按時服用抗排斥藥物，防止身體排斥新腎臟。同時需要定期回診追蹤腎功能與健康狀況，這是長期的照護承諾。',
+     pros:['藥物能有效保護腎臟功能','定期追蹤可早期發現問題'],
+     cons:['長期服藥，不可自行中斷','藥物副作用需定期監控']},
+  ],
+  pd:[
+    {icon:'🏠',type:'basic',title:'什麼是腹膜透析？',
+     scene:'換液在家進行，有人選在看電視時，有人在早餐前——找到屬於自己的節奏。',
+     desc:'利用你肚子裡的腹膜當作過濾膜。每天定時將透析液注入腹腔，停留一段時間後排出，把身體的廢物帶走。可以在家自己操作，不需到醫院。',
+     pros:['可在家進行，不需定期到院','時間安排較有彈性','對血壓影響相對較小'],
+     cons:['每天需要規律換液操作','腹部需要放置透析導管','需嚴格注意感染預防']},
+    {icon:'📅',type:'caution',title:'每天規律換液',
+     scene:'每次換液約30分鐘，相當於一集新聞的時間，需要在乾淨的房間進行。',
+     desc:'腹膜透析需要每天定時換液，通常一天換 3-4 次，每次約 30 分鐘。這會成為你日常生活的固定行程，需要建立穩定的習慣才能維持效果。',
+     pros:['可依個人作息彈性安排時間','白天換液可保留夜間睡眠時間'],
+     cons:['每天都要執行，不可遺漏','外出或旅遊需要事先規劃準備']},
+    {icon:'🦠',type:'caution',title:'感染預防非常重要',
+     scene:'操作前徹底洗手20秒，戴口罩，在固定位置進行——習慣後就會變成直覺。',
+     desc:'腹膜炎是腹膜透析最重要的併發症。操作時必須嚴格保持清潔無菌，按照護理師教導的步驟進行，才能有效預防感染，保護腹膜功能。',
+     pros:['有完整的操作教學與支援','感染早期發現通常可以治療'],
+     cons:['若感染可能需要住院治療','嚴重感染可能需改變治療方式']},
+  ],
+  home_hd:[
+    {icon:'🔧',type:'basic',title:'什麼是居家血液透析？',
+     scene:'在家透析時可以看電視、讀書，不需要等候也不用趕時間，許多人說比去院所放鬆很多。',
+     desc:'把血液透析機器放在家裡，由你或家人操作，將血液引出體外過濾後送回。醫護人員可遠端監測安全。相較院所透析，時間安排更有彈性。',
+     pros:['時間安排最有彈性自由','可增加透析頻率改善感受','在家環境較舒適自在'],
+     cons:['需要在家安裝透析設備','需完整學習操作流程','對家庭空間與家人配合有要求']},
+    {icon:'📚',type:'caution',title:'需要完整的訓練',
+     scene:'訓練通常在醫院進行，學會後醫護會遠端監測，你並不是一個人面對機器。',
+     desc:'開始居家血液透析前，你和家人需要接受完整培訓課程，學習機器操作、緊急應變及日常保養。訓練通常需要數週至數個月。',
+     pros:['訓練完整後可獨立操作','培訓期間有醫護人員全程陪同'],
+     cons:['訓練期間需要投入大量時間','需要家人共同學習與長期配合']},
+    {icon:'🏡',type:'caution',title:'家庭環境的準備',
+     scene:'設備大約需要一個小房間或固定角落，專業團隊會到家裡評估並協助規劃。',
+     desc:'居家血液透析需在家中安裝RO純水設備，儲備耗材，並確保有穩定電力與足夠空間。開始前需要專業團隊評估家中環境是否符合條件。',
+     pros:['環境評估由專業團隊協助','部分改造費用可以申請補助'],
+     cons:['需要一定的居家空間','設備安裝需要提前規劃準備']},
+  ],
+  center_hd:[
+    {icon:'🏥',type:'basic',title:'什麼是院所血液透析？',
+     scene:'每週三次固定到院，時間雖然固定，但很多人說在透析中心遇到了聊得來的病友，反而不孤單。',
+     desc:'定期到醫院或透析診所，由護理師協助進行血液透析。通常一週三次，每次約四小時。全程有醫護人員陪伴，是目前最普遍的透析方式。',
+     pros:['全程有專業醫護人員照顧','緊急狀況可立即處理','不需自行準備任何設備'],
+     cons:['需固定時間往返院所','生活時間受到較多限制','透析後可能感到疲勞']},
+    {icon:'🧑‍⚕️',type:'benefit',title:'專業團隊全程陪伴',
+     scene:'透析中血壓有點低？護理師馬上調整，不需要自己判斷，這讓很多人放心很多。',
+     desc:'每次透析都有護理師監測血壓、血流量及透析效果。若出現低血壓、抽筋或其他不適，醫護人員可以立刻介入處理，讓你感到安心有保障。',
+     pros:['即時處理各種透析不適','定期與醫師面對面討論病情','可與其他病友互相支持交流'],
+     cons:['對醫護支持依賴性較高','自主管理空間相對較少']},
+    {icon:'🚌',type:'caution',title:'固定往返的生活節奏',
+     scene:'可以申請復康巴士或交通補助；有些透析中心早上六點就開始，可以透析完再去上班。',
+     desc:'每週需要到院三次，每次約四小時加上來回交通，對工作、出遊及家庭生活的規劃都會有影響。交通往返也需要時間與體力的安排。',
+     pros:['時間固定，生活有規律節奏','可申請交通補助或安排接送服務'],
+     cons:['假日節日安排受到影響','長途旅行需提前安排透析中心']},
+  ],
+};
+
+// BOSS QUESTIONS — 四個治療區各 3 道關主知識題（啟程渡口不需闖關）
+const BOSS_QS={
+  transplant:[
+    {q:'腎臟移植成功後，通常需要長期做哪一件事？',
+     opts:['每週到醫院進行血液透析','每天服用抗排斥藥物','每個月更換人工腎臟','完全不需要再追蹤'],
+     correct:1,
+     exp:'腎臟移植後需要長期服用抗排斥藥物，防止身體排斥新腎臟，這是移植成功維持的關鍵。'},
+    {q:'等待腎臟移植的期間，病人通常需要怎麼做？',
+     opts:['什麼都不用做，只要等待','繼續進行透析治療維持身體狀況','立即停止所有治療','每週接受化療'],
+     correct:1,
+     exp:'等待腎臟移植時，仍需持續透析（血液透析或腹膜透析）來維持身體機能，確保等到適合腎臟時能接受手術。'},
+    {q:'腎臟移植的腎臟來源，以下哪一項描述正確？',
+     opts:['可以使用任何人捐贈的腎臟，不需配對','需要與捐贈者進行血型及組織配對','捐贈者必須是直系親屬才能使用','移植的腎臟通常是人工製造的'],
+     correct:1,
+     exp:'腎臟移植需要進行血型及組織配對，確保捐贈腎臟與受贈者相容，才能降低排斥風險。這也是等待時間可能較長的原因之一。'},
+  ],
+  pd:[
+    {q:'腹膜透析主要是利用身體的哪個部位來進行過濾？',
+     opts:['皮膚','腹膜','肺臟的薄膜','血管壁'],
+     correct:1,
+     exp:'腹膜透析利用腹腔內的「腹膜」作為天然過濾膜，將透析液注入腹腔停留後排出，廢物會透過腹膜滲透到透析液中。'},
+    {q:'腹膜透析最需要特別注意預防哪一種併發症？',
+     opts:['骨折','腹膜炎（腹腔感染）','過敏反應','心律不整'],
+     correct:1,
+     exp:'腹膜炎是腹膜透析最重要的併發症，操作時必須嚴格保持無菌，若發生感染需及時治療，嚴重時可能影響繼續使用腹膜透析。'},
+    {q:'腹膜透析通常一天需要換液幾次？',
+     opts:['每週一次就夠了','每兩天一次','通常一天 3～4 次','每小時一次'],
+     correct:2,
+     exp:'腹膜透析通常每天需要換液 3～4 次，每次約 30 分鐘。規律執行換液是維持透析效果的關鍵。'},
+  ],
+  home_hd:[
+    {q:'居家血液透析與院所血液透析相比，最主要的優點是什麼？',
+     opts:['完全不需要學習任何操作','時間安排最有彈性，可在家進行','不需要任何家庭支持','費用完全免費'],
+     correct:1,
+     exp:'居家血液透析最大的優點是時間彈性，可在家自行安排透析時間，不需固定往返院所，生活自由度較高。'},
+    {q:'開始居家血液透析前，最重要的準備是什麼？',
+     opts:['直接購買機器自己摸索','接受完整的培訓課程並讓家人一起學習','先嘗試一週再決定要不要繼續','等醫師直接到家中操作'],
+     correct:1,
+     exp:'居家血液透析需要病人與家人接受完整培訓，學習機器操作、緊急應變等，確保安全後才能在家執行。'},
+    {q:'居家血液透析進行時，醫護團隊通常如何確保安全？',
+     opts:['完全不管，病人自行負責','每次都有護理師親自到家陪同','透過遠端監測系統即時監控','每天打電話詢問狀況'],
+     correct:2,
+     exp:'居家血液透析通常配備遠端監測系統，讓醫護人員可以即時監控透析狀況，有異常時能及早介入，提供安全保障。'},
+  ],
+  center_hd:[
+    {q:'院所血液透析通常一週需要到院幾次？',
+     opts:['每天一次，共七次','每週兩次','每週三次','每月一次'],
+     correct:2,
+     exp:'院所血液透析一般每週進行三次，每次約四小時，這是目前最常見的透析排程。'},
+    {q:'在院所血液透析時，如果出現血壓下降的狀況，應該怎麼辦？',
+     opts:['自己忍耐，不要打擾醫護人員','立刻自行回家休息','告知現場護理師，由醫護人員立即處理','等回家後再打電話詢問'],
+     correct:2,
+     exp:'院所透析的優點之一就是有醫護人員全程陪伴，若出現血壓下降等不適，護理師可立即介入調整，這是院所透析的重要安全保障。'},
+    {q:'院所血液透析的每次治療時間，通常大約是多久？',
+     opts:['約 30 分鐘','約 1 小時','約 4 小時','約 8 小時'],
+     correct:2,
+     exp:'院所血液透析每次治療約需 4 小時，加上來回交通，每次外出時間通常需要半天左右，需要提前規劃日常行程。'},
+  ],
 };
 
 const ZONES=[
   {key:'harbor',label:'啟程渡口',emoji:'🚤',cssClass:'harbor',
-   desc:'和導覽員小腎見面，整理自己目前最在意的事情。',npcs:['小腎｜導覽員'],
-   narrative:'小腎站在木棧道旁，手裡拿著一本空白的決策手冊。海風很輕，島上的旅程正要開始。',
-   dialogue:[{speaker:'小腎',av:'🧑‍⚕️',text:'歡迎來到新腎小島！這裡不是考試，也不是要你立刻做決定的地方。'},{speaker:'小腎',av:'🧑‍⚕️',text:'我們一起走一走、聽聽不同人的故事，再慢慢看看你比較在意什麼。'}],
-   cards:[],
-   qs:[{key:'h1',txt:'如果要形容你現在的感覺，會比較接近哪一種？',opts:['我很混亂，不知道差別','我知道一些，但還是沒有把握','我最怕自己做錯決定','我想先知道哪種比較符合生活']},
-       {key:'h2',txt:'在開始之前，你現在最在意的事情比較像哪一個？',opts:['我希望有人陪著我、比較安心','我想保有一些生活彈性','我很怕醫療操作，像打針或看到血','我還不確定自己最在意什麼']}]},
+   noBoss:true,
+   desc:'閱讀探島說明與治療概覽，看完三張知識卡即可獲得啟程之鑰！',npcs:['小腎｜導覽員'],
+   bossName:'小腎',bossAv:'🧑‍⚕️',
+   keyEmoji:'🗝️',keyLabel:'啟程之鑰',keyColor:'#64c8f0',
+   narrative:'小腎站在木棧道旁，手裡拿著一本空白的決策手冊。海風很輕，島上的旅程正要開始。\n\n📌 探島規則：① 先翻閱知識卡 → ② 挑戰關主知識題（答對才能過關）→ ③ 集滿 5 把鑰匙解鎖決策廣場 → ④ 在廣場整理偏好並產生摘要。答錯沒關係，看完解說再試一次！'},
   {key:'transplant',label:'移植希望山丘',emoji:'🌄',cssClass:'transplant',
    desc:'認識腎臟移植的希望、等待、評估與術後照護。',npcs:['林護理師｜移植協調師'],
+   bossName:'林護理師',bossAv:'👩‍⚕️',bossIntro:'我負責移植協調工作多年了。你讀完知識卡了嗎？讓我來考考你，看看你是否真的理解移植的關鍵概念！',
+   bossWin:'非常好！你對腎臟移植有正確的認識。這把鑰匙，你當之無愧！',
+   keyEmoji:'🌟',keyLabel:'希望之鑰',keyColor:'#f5a0b8',
    narrative:'山丘上有一棵祈願樹，風一吹，掛牌輕輕碰撞。這裡談的是希望，也談等待。',
-   dialogue:[{speaker:'林護理師',av:'👩‍⚕️',text:'對不少病人來說，腎臟移植可能帶來較好的生活品質，也通常有較佳的長期存活率。'},{speaker:'林護理師',av:'👩‍⚕️',text:'不過，它需要合適的腎臟來源，也需要手術與長期追蹤。'}],
-   cards:['tx_basic','tx_bq','tx_bs','tx_cw','tx_cd'],
-   qs:[{key:'tx1',txt:'聽到「腎臟移植」時，你第一個想到的是什麼？',opts:['生活品質可能比較好','我擔心手術風險','我擔心等不到腎臟','我不太清楚移植後還要做什麼']},
-       {key:'tx2',txt:'如果移植後需要長期服藥與定期追蹤，你會怎麼想？',opts:['只要生活品質可能更好，我願意配合','我可以接受，但想更了解風險','我有點擔心自己能不能長期做到','我現在還不確定']}]},
+   qs:[
+     {key:'tx1',npc:{av:'👩‍⚕️',name:'林護理師'},txt:'翻完了腎臟移植的知識卡，你最在意的是哪一點？',opts:['生活品質可能比較好，我有興趣','我擔心手術的風險','我擔心等不到合適的腎臟','我還不太清楚移植後要怎麼照顧']},
+     {key:'tx2',npc:{av:'👩‍⚕️',name:'林護理師'},txt:'移植後需要長期服藥與定期追蹤，這對你來說感覺怎麼樣？',opts:['只要生活品質可能更好，我願意配合','我可以接受，但想先了解更多細節','我有點擔心自己能不能長期做到','我現在還不確定']},
+   ]},
   {key:'pd',label:'腹透花園',emoji:'🌿',cssClass:'pd',
-   desc:'了解腹膜透析如何進入日常生活，以及自主與規律並存的特性。',npcs:['周護理師｜腹膜透析護理師','小芸｜腹透病友'],
+   desc:'了解腹膜透析如何進入日常生活，以及自主與規律並存的特性。',npcs:['周護理師','小芸｜腹透病友'],
+   bossName:'周護理師',bossAv:'👩‍⚕️',bossIntro:'腹膜透析看起來簡單，但細節很重要！我要確認你真的讀懂了這些知識卡。準備迎接挑戰！',
+   bossWin:'你對腹膜透析的認識很扎實！繼續保持這樣的學習態度！',
+   keyEmoji:'🌿',keyLabel:'綠葉之鑰',keyColor:'#78d878',
    narrative:'玻璃溫室裡很安靜，桌上整齊擺著換液用品。這裡討論的是把治療帶進每天生活。',
-   dialogue:[{speaker:'周護理師',av:'👩‍⚕️',text:'腹膜透析是在家中進行的治療方式，需要規律把透析液注入腹腔，再按時更換。'},{speaker:'小芸',av:'🧑',text:'它讓我比較有機會安排自己的生活，但也需要每天穩定地照顧自己。'}],
-   cards:['pd_basic','pd_h','pd_f','pd_d','pd_i'],
-   qs:[{key:'pd1',txt:'如果治療需要你每天規律自己處理，你會比較像哪一種感覺？',opts:['我覺得自己可以慢慢學','我喜歡這種自主感','我怕自己做錯','每天都要做讓我覺得壓力很大']},
-       {key:'pd2',txt:'聽到「要特別注意感染預防」這件事時，你會怎麼想？',opts:['我可以配合，只要有人教我','我願意做，但怕自己不夠細心','我覺得有點麻煩','這讓我有點卻步']}]},
+   qs:[
+     {key:'pd1',npc:{av:'👩‍⚕️',name:'周護理師'},txt:'腹膜透析需要每天自己規律操作。看完知識卡後，你的感覺比較像哪一種？',opts:['我覺得自己可以慢慢學會','我喜歡這種能自己掌控的感覺','我有點擔心自己會做錯','每天都要做，讓我覺得壓力很大']},
+     {key:'pd2',npc:{av:'🧑',name:'小芸'},txt:'我做腹透兩年了！對於「要特別注意感染預防」，你的感覺是？',opts:['我可以配合，只要有人好好教我','我願意做，但怕自己不夠細心','感覺有點麻煩，需要再考慮','這讓我有點卻步，不太確定能否做到']},
+   ]},
   {key:'home_hd',label:'居家透析工坊',emoji:'🏠',cssClass:'home_hd',
    desc:'探索居家血液透析的彈性、設備需求與家庭支持。',npcs:['陳老師｜居家透析個管師','林太太｜家屬照顧者'],
+   bossName:'陳老師',bossAv:'🧑‍🔧',bossIntro:'我帶過很多病人進行居家透析訓練！現在換你來告訴我，你記住了多少重要的知識點？',
+   bossWin:'居家透析的關鍵你都掌握了！這把鑰匙屬於你！',
+   keyEmoji:'🏠',keyLabel:'家園之鑰',keyColor:'#f5c850',
    narrative:'屋內有設備模型與教學圖卡。這裡談的是自由，也談責任與家庭配合。',
-   dialogue:[{speaker:'陳老師',av:'🧑‍🔧',text:'居家血液透析把治療帶回家，時間安排可能更有彈性，但也需要學習操作、準備設備與耗材空間。'},{speaker:'林太太',av:'👩',text:'如果治療方式需要在家進行，空間、時間、誰來幫忙，這些都很重要。'}],
-   cards:['hh_basic','hh_f','hh_s','hh_sp','hh_t'],
-   qs:[{key:'hh1',txt:'如果治療可以在家做、時間更有彈性，但要學習操作和準備設備，你的想法比較像哪一種？',opts:['我願意學，這樣比較自由','我需要有人陪我一起學','我擔心家裡空間不夠','我覺得這樣壓力有點大']},
-       {key:'hh2',txt:'如果治療需要家人一起參與，你覺得你們家比較像哪一種情況？',opts:['家人願意一起學','有人願意幫忙，但有限','家裡支持可能不足','我不想太依賴家人']}]},
+   qs:[
+     {key:'hh1',npc:{av:'🧑‍🔧',name:'陳老師'},txt:'居家血液透析時間彈性，但要學習操作和準備設備。你的想法比較像哪一種？',opts:['我願意學，這樣生活比較自由','我需要有人陪我一起學才放心','我擔心家裡空間或條件不夠','我覺得這樣的準備負擔有點大']},
+     {key:'hh2',npc:{av:'👩',name:'林太太'},txt:'我是我先生的照顧者。如果治療需要家人一起參與，你們家的情況比較像哪一種？',opts:['家人願意一起學習、一起承擔','有人願意幫忙，但能力或時間有限','家裡的支持可能不夠充足','我不想太依賴家人，希望自己來']},
+   ]},
   {key:'center_hd',label:'洗腎碼頭',emoji:'🏥',cssClass:'center_hd',
-   desc:'認識醫療院所血液透析的穩定、安全感與固定排程。',npcs:['黃護理師｜血液透析護理師','陳伯伯｜長期透析病友'],
+   desc:'認識醫療院所血液透析的穩定、安全感與固定排程。',npcs:['黃護理師','陳伯伯｜長期透析病友'],
+   bossName:'黃護理師',bossAv:'👩‍⚕️',bossIntro:'院所透析是最多人選擇的方式，但細節你真的都懂嗎？讓我來測試一下！',
+   bossWin:'你對院所血液透析掌握得很好！這是你應得的鑰匙！',
+   keyEmoji:'⚓',keyLabel:'錨點之鑰',keyColor:'#a090e8',
    narrative:'碼頭邊的班表板整齊排列，長椅上坐著等待的人。這裡談的是規律、安全感與固定節奏。',
-   dialogue:[{speaker:'黃護理師',av:'👩‍⚕️',text:'醫療院所血液透析通常在醫院或透析診所進行，常見是一週三次、每次大約四小時。'},{speaker:'陳伯伯',av:'👴',text:'固定來回真的很花力氣，但有人幫我看著，我會比較安心。'}],
-   cards:['ch_basic','ch_s','ch_e','ch_sc','ch_fat'],
-   qs:[{key:'ch1',txt:'如果每週固定到醫院治療三次、每次大約四小時，你最先想到的是什麼？',opts:['有醫護在旁邊比較安心','我擔心交通和時間','我想知道會不會很累','我不喜歡生活被固定住']},
-       {key:'ch2',txt:'如果治療時出現不舒服，你會比較希望哪一種情況？',opts:['現場有人立刻處理','自己先學會判斷也可以','兩者都很重要','我沒想過這件事']}]},
+   qs:[
+     {key:'ch1',npc:{av:'👩‍⚕️',name:'黃護理師'},txt:'院所血液透析每週固定到院三次，每次約四小時。你第一個想到的是什麼？',opts:['有醫護人員在旁邊，我比較安心','我擔心交通和時間的安排','我想知道透析過程會不會很不舒服','我不喜歡生活被固定的時間綁住']},
+     {key:'ch2',npc:{av:'👴',name:'陳伯伯'},txt:'我做血透十年了。如果透析中出現不舒服，你希望是哪種情況？',opts:['現場有護理師立刻幫我處理','我自己先學會怎麼判斷也可以','兩種都很重要，最好都有','我沒想過這個問題，需要再想想']},
+   ]},
 ];
 
 const QUIZ=[
-  {q:'腹膜透析通常需要每天規律執行換液。',choices:['是','否','我不確定'],correct:0,exp:'腹膜透析通常需要病人每天規律進行換液。'},
-  {q:'醫療院所血液透析常見每次治療時間大約為 4 小時。',choices:['是','否','我不確定'],correct:0,exp:'醫療院所血液透析常見每次約 4 小時，通常每週 3 次。'},
-  {q:'腎臟移植後通常不需要再追蹤，也不用長期服藥。',choices:['是','否','我不確定'],correct:1,exp:'腎臟移植後通常仍需長期服用抗排斥藥物並規律追蹤。'},
+  {q:'腹膜透析通常需要每天規律執行換液。',choices:['是','否','我不確定'],correct:0,exp:'腹膜透析通常需要病人每天規律進行換液，是維持治療效果的關鍵。'},
+  {q:'醫療院所血液透析常見每次治療時間大約為 4 小時。',choices:['是','否','我不確定'],correct:0,exp:'院所血液透析常見每次約 4 小時，通常每週 3 次。'},
+  {q:'腎臟移植後通常不需要再追蹤，也不用長期服藥。',choices:['是','否','我不確定'],correct:1,exp:'腎臟移植後通常仍需長期服用抗排斥藥物並規律回診追蹤。'},
 ];
 const VOPT=['安心感與醫護支持','生活彈性','自主參與','減少打針或看到血的不安','家庭支持','居家安排可行性','我還需要更多資訊'];
 
-const S={
-  playerName:'旅人',visited:new Set(),cards:new Set(),
-  ans:{},qans:{},vals:[],
-  p:{medical_support:0,autonomy:0,flexibility:0,fear_needles:0,family_support:0,home_feasibility:0,self_management_anxiety:0,interest_transplant:0,interest_pd:0,interest_home_hd:0,interest_center_hd:0,decision_anxiety:0,need_more_info:0,long_term_adherence:0},
-};
-function save(){try{localStorage.setItem('ki_acnh3',JSON.stringify({...S,visited:[...S.visited],cards:[...S.cards]}));}catch(e){}}
-function load(){
-  try{
-    const r=JSON.parse(localStorage.getItem('ki_acnh3')||'null');
-    if(!r)return;
-    S.playerName=r.playerName||'旅人';S.visited=new Set(r.visited||[]);S.cards=new Set(r.cards||[]);
-    S.ans=r.ans||{};S.qans=r.qans||{};S.vals=r.vals||[];S.p={...S.p,...(r.p||{})};
-  }catch(e){}
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+function freshState(){
+  return{
+    playerName:'旅人',
+    visited:new Set(),   // zones where dialogue is done
+    bossCleared:new Set(), // zones where boss is cleared
+    ans:{},qans:{},vals:[],flipIdx:{},
+    _currentZone:null,_zoneSnap:{},
+    // Boss battle state per zone
+    bossState:{},  // { [zoneKey]: { qIdx:0, done:false, answers:[...] } }
+    p:{medical_support:0,autonomy:0,flexibility:0,fear_needles:0,family_support:0,home_feasibility:0,self_management_anxiety:0,interest_transplant:0,interest_pd:0,interest_home_hd:0,interest_center_hd:0,decision_anxiety:0,need_more_info:0,long_term_adherence:0}
+  };
 }
+let S=freshState();
 
+// Current zone phase: 'cards' | 'boss' | 'dialogue'
+let zonePhase='cards';
+
+function resetGame(){
+  S=freshState();
+  document.getElementById('name-inp').value='';
+  scr('title');
+  toast('已重新開始 🏝️');
+}
+function resetZone(){
+  const k=S._currentZone;if(!k)return;
+  const z=ZONES.find(x=>x.key===k);if(!z)return;
+  S.bossCleared.delete(k);
+  S.visited.delete(k);
+  S.bossState[k]={qIdx:0,done:false,answers:[]};
+  S.flipIdx[k]=0;
+  // Also reset plaza scoring since zone scores changed
+  S.ans={};
+  S.qans={};S.vals=[];S.visited.delete('plaza');
+  // Reset scoring for this zone
+  const snap=S._zoneSnap&&S._zoneSnap[k];
+  if(snap){Object.keys(snap).forEach(key=>{S.p[key]=(S.p[key]||0)-snap[key];});delete S._zoneSnap[k];}
+  zonePhase='cards';
+  renderZone(z);
+  document.getElementById('screen-zone').scrollTop=0;
+  toast('已重設本關，可以重新挑戰 🌱');
+}
+function resetPlaza(){S.qans={};S.vals=[];S.visited.delete('plaza');renderPlaza();document.getElementById('screen-plaza').scrollTop=0;toast('已重設決策廣場 🌱');}
+
+// ─────────────────────────────────────────────
+// SCORING
+// ─────────────────────────────────────────────
 function applyZone(k,a){
   const p=S.p,add=(x,v=1)=>{p[x]=(p[x]||0)+v;};
   if(k==='harbor'){
     if(a.h1==='我最怕自己做錯決定')add('decision_anxiety');
-    else if(['我知道一些，但還是沒有把握','我很混亂，不知道差別'].includes(a.h1))add('need_more_info');
-    if(a.h2==='我希望有人陪著我、比較安心'){add('medical_support');S.cards.add('value_safety');}
-    else if(a.h2==='我想保有一些生活彈性'){add('flexibility');S.cards.add('value_flexibility');}
-    else if(a.h2==='我很怕醫療操作，像打針或看到血'){add('fear_needles');S.cards.add('value_fear_needles');}
-    else{add('need_more_info');S.cards.add('value_more_info');}
-  } else if(k==='transplant'){
-    ['tx_basic','tx_bq','tx_bs','tx_cw','tx_cd'].forEach(c=>S.cards.add(c));
-    if(a.tx1==='生活品質可能比較好')add('interest_transplant',2);else add('need_more_info');
-    if(a.tx1==='我擔心等不到腎臟')add('interest_transplant');
+    else if(['我有一點了解，但還是沒有把握','我很混亂，不知道不同治療的差別'].includes(a.h1))add('need_more_info');
+    if(a.h2==='我希望有人陪著我、比較安心')add('medical_support');
+    else if(a.h2==='我想保有一些生活彈性')add('flexibility');
+    else if(a.h2==='我很怕醫療操作，像打針或看到血')add('fear_needles');
+    else add('need_more_info');
+  }else if(k==='transplant'){
+    if(a.tx1==='生活品質可能比較好，我有興趣'){add('interest_transplant',2);}else add('need_more_info');
+    if(a.tx1==='我擔心等不到合適的腎臟')add('interest_transplant');
     if(a.tx2==='只要生活品質可能更好，我願意配合'){add('interest_transplant');add('long_term_adherence');}
-    else if(a.tx2==='我可以接受，但想更了解風險'){add('interest_transplant');add('need_more_info');}
+    else if(a.tx2==='我可以接受，但想先了解更多細節'){add('interest_transplant');add('need_more_info');}
     else if(a.tx2==='我有點擔心自己能不能長期做到')add('self_management_anxiety');
     else add('need_more_info');
-  } else if(k==='pd'){
-    ['pd_basic','pd_h','pd_f','pd_d','pd_i'].forEach(c=>S.cards.add(c));
-    if(a.pd1==='我覺得自己可以慢慢學'){add('interest_pd');add('autonomy');}
-    else if(a.pd1==='我喜歡這種自主感'){add('interest_pd',2);add('autonomy',2);add('flexibility');S.cards.add('value_autonomy');}
-    else if(a.pd1==='我怕自己做錯')add('self_management_anxiety');
+  }else if(k==='pd'){
+    if(a.pd1==='我覺得自己可以慢慢學會'){add('interest_pd');add('autonomy');}
+    else if(a.pd1==='我喜歡這種能自己掌控的感覺'){add('interest_pd',2);add('autonomy',2);add('flexibility');}
+    else if(a.pd1==='我有點擔心自己會做錯')add('self_management_anxiety');
     else add('self_management_anxiety',2);
-    if(a.pd2==='我可以配合，只要有人教我')add('interest_pd');
+    if(a.pd2==='我可以配合，只要有人好好教我')add('interest_pd');
     else if(a.pd2==='我願意做，但怕自己不夠細心')add('self_management_anxiety');
-    else if(['我覺得有點麻煩','這讓我有點卻步'].includes(a.pd2)){add('need_more_info');if(a.pd2.includes('卻步'))add('self_management_anxiety');}
-  } else if(k==='home_hd'){
-    ['hh_basic','hh_f','hh_s','hh_sp','hh_t'].forEach(c=>S.cards.add(c));
-    if(a.hh1==='我願意學，這樣比較自由'){add('interest_home_hd',2);add('autonomy',2);add('flexibility');}
-    else if(a.hh1==='我需要有人陪我一起學'){add('interest_home_hd');add('family_support');S.cards.add('value_family');}
-    else if(a.hh1==='我擔心家裡空間不夠'){add('need_more_info');add('home_feasibility',-1);}
+    else{add('need_more_info');if(a.pd2&&a.pd2.includes('卻步'))add('self_management_anxiety');}
+  }else if(k==='home_hd'){
+    if(a.hh1==='我願意學，這樣生活比較自由'){add('interest_home_hd',2);add('autonomy',2);add('flexibility');}
+    else if(a.hh1==='我需要有人陪我一起學才放心'){add('interest_home_hd');add('family_support');}
+    else if(a.hh1==='我擔心家裡空間或條件不夠'){add('need_more_info');add('home_feasibility',-1);}
     else add('self_management_anxiety');
-    if(a.hh2==='家人願意一起學'){add('family_support',2);add('home_feasibility');}
-    else if(a.hh2==='有人願意幫忙，但有限')add('family_support');
+    if(a.hh2==='家人願意一起學習、一起承擔'){add('family_support',2);add('home_feasibility');}
+    else if(a.hh2==='有人願意幫忙，但能力或時間有限')add('family_support');
     else{add('family_support',-1);add('need_more_info');}
-  } else if(k==='center_hd'){
-    ['ch_basic','ch_s','ch_e','ch_sc','ch_fat'].forEach(c=>S.cards.add(c));
-    if(a.ch1==='有醫護在旁邊比較安心'){add('interest_center_hd',2);add('medical_support',2);}
-    else if(a.ch1==='我擔心交通和時間'){add('flexibility');add('need_more_info');}
-    else if(a.ch1==='我想知道會不會很累')add('need_more_info');
+  }else if(k==='center_hd'){
+    if(a.ch1==='有醫護人員在旁邊，我比較安心'){add('interest_center_hd',2);add('medical_support',2);}
+    else if(a.ch1==='我擔心交通和時間的安排'){add('flexibility');add('need_more_info');}
+    else if(a.ch1==='我想知道透析過程會不會很不舒服')add('need_more_info');
     else add('flexibility',2);
-    if(a.ch2==='現場有人立刻處理'){add('interest_center_hd');add('medical_support',2);S.cards.add('value_safety');}
-    else if(a.ch2==='自己先學會判斷也可以')add('autonomy');
-    else if(a.ch2==='兩者都很重要'){add('medical_support');add('autonomy');}
+    if(a.ch2==='現場有護理師立刻幫我處理'){add('interest_center_hd');add('medical_support',2);}
+    else if(a.ch2==='我自己先學會怎麼判斷也可以')add('autonomy');
+    else if(a.ch2==='兩種都很重要，最好都有'){add('medical_support');add('autonomy');}
     else add('need_more_info');
   }
 }
-
 function evaluate(){
   const p=S.p;
-  const sc={'腎臟移植':p.interest_transplant+p.long_term_adherence,'腹膜透析':p.autonomy+p.flexibility+p.fear_needles-p.self_management_anxiety+p.interest_pd,'居家血液透析':p.autonomy+p.flexibility+p.family_support+p.home_feasibility-p.self_management_anxiety+p.interest_home_hd,'醫療院所血液透析':p.medical_support+p.interest_center_hd+Math.max(0,Math.floor(p.decision_anxiety/2))};
+  const itx=p.interest_transplant*2+p.long_term_adherence*2;
+  const ipd=p.interest_pd*2+p.autonomy+p.flexibility+p.fear_needles-p.self_management_anxiety;
+  const ihhd=p.interest_home_hd*2+p.autonomy+p.flexibility+p.family_support+p.home_feasibility-p.self_management_anxiety;
+  const ichd=p.interest_center_hd*2+p.medical_support+Math.max(0,p.decision_anxiety);
+  const sc={'腎臟移植':itx,'腹膜透析':ipd,'居家血液透析':ihhd,'醫療院所血液透析':ichd};
   const sorted=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
   const top=sorted[0][0],second=sorted[1][0],ts=sorted[0][1],ss=sorted[1][1];
-  const tv=['medical_support','autonomy','flexibility','fear_needles','family_support','home_feasibility'].filter(k=>p[k]>0).sort((a,b)=>p[b]-p[a]).slice(0,3).map(k=>({'medical_support':'安心感與醫護支持','autonomy':'自主參與','flexibility':'生活彈性','fear_needles':'減少打針不安','family_support':'家庭支持','home_feasibility':'居家可行性'}[k]));
-  if(p.need_more_info>=2||ts-ss<=1)return{title:'你目前還在整理想法，這很正常',summary:['你對不同治療方式都有一些在意的地方，目前還沒有明確偏向。','這不代表你做不好決定，而是你正在認真比較各面向。'],recs:[top,second],tv};
-  const m={'醫療院所血液透析':{title:'你目前較重視治療中的安心感與醫護支持',summary:['你似乎較在意治療時有專業人員在旁協助，能即時處理不舒服的情況。','這通常代表你對安全感、穩定感與醫護支持有較高需求。']},'腹膜透析':{title:'你目前較重視生活彈性與自主參與',summary:['你似乎在意治療能否與日常生活整合，也願意考慮自己參與照護。','對你而言，自主性與生活安排可能是很重要的考量。']},'居家血液透析':{title:'你目前具備較高的居家治療支持條件',summary:['你兼顧了生活彈性、自主參與，以及家庭或環境條件的可行性。','居家型治療方式可能值得進一步和醫療團隊詳細討論。']},'腎臟移植':{title:'你目前對腎臟移植有較高的關注與期待',summary:['你對腎臟移植可能帶來的生活品質與長期效果有較高興趣。','你也願意思考長期追蹤與自我管理的可能性。']}};
-  return{...m[top],recs:[top,second],tv};
+  const tv=['medical_support','autonomy','flexibility','fear_needles','family_support','home_feasibility']
+    .filter(k=>p[k]>0).sort((a,b)=>p[b]-p[a]).slice(0,3)
+    .map(k=>({'medical_support':'安心感與醫護支持','autonomy':'自主參與','flexibility':'生活彈性','fear_needles':'減少打針不安','family_support':'家庭支持','home_feasibility':'居家可行性'}[k]));
+  const advice={'醫療院所血液透析':'建議你與醫師討論院所血液透析的排程安排，並提前了解附近透析診所的位置與交通方式。可以詢問是否有交通補助資源。','腹膜透析':'建議你向腹膜透析護理師預約衛教，了解換液的實際操作流程，並評估家中的清潔空間是否符合需求。','居家血液透析':'建議先與家人充分討論照顧分工，再請居家透析個管師到家中進行環境評估，了解設備安裝的可行性。','腎臟移植':'建議向移植協調師詢問評估流程與等待清單，同時了解等待期間的透析銜接安排。','mixed':'建議你把今天整理出來的問題帶去門診，和醫師一起逐一討論，不需要急著做決定。'};
+  if(p.need_more_info>=2||ts-ss<=1){
+    return{style:'mixed',top,second,title:'你目前還在整理自己的想法，這很正常',summary:'你對不同治療方式都有一些在意的地方，目前還沒有明確偏向。這代表你正在認真思考，而不是猶豫不決。',direction:'目前你的回答顯示對「'+top+'」和「'+second+'」都有一定程度的關注，建議進一步了解這兩種選擇的差異。',advice:advice.mixed,recs:[top,second],tv};
+  }
+  const styleMap={'醫療院所血液透析':{title:'你目前較重視治療時的安心感與醫護支持',summary:'你的回答顯示你在意治療過程有人在旁協助，能即時處理不舒服，這是很合理的需求。',direction:'「醫療院所血液透析」可能較符合你目前的狀況。這個方式由醫護人員全程協助，時間固定，適合重視安全感的人。'},'腹膜透析':{title:'你目前較重視生活彈性與自主參與',summary:'你的回答顯示你在意治療能配合日常作息，也願意學習自己照護，這是很積極的態度。',direction:'「腹膜透析」可能較符合你目前的狀況。這個方式可在家進行，時間彈性，適合重視自主與生活整合的人。'},'居家血液透析':{title:'你目前具備較高的居家治療支持條件',summary:'你的回答顯示你兼具學習意願、生活彈性需求，以及家庭支持的可行性，這是很好的基礎。',direction:'「居家血液透析」可能值得你深入評估。這個方式時間最有彈性，但需要家庭配合和環境準備。'},'腎臟移植':{title:'你目前對腎臟移植有較高的關注與期待',summary:'你的回答顯示你對移植後的生活品質有期待，也願意承擔長期照護的責任，這是很重要的心理準備。',direction:'「腎臟移植」可能是你值得深入了解的方向。這個方式可能帶來最接近一般生活的品質，但需要等待與術後管理。'}};
+  const s=styleMap[top];
+  return{style:top,top,second,title:s.title,summary:s.summary,direction:s.direction,advice:advice[top]||advice.mixed,recs:[top,second],tv};
 }
 
-function radarSVG(){
-  const p=S.p;
-  const ax=[{l:'醫護支持',v:Math.min(p.medical_support+p.interest_center_hd,6)},{l:'自主參與',v:Math.min(p.autonomy+p.interest_pd,6)},{l:'生活彈性',v:Math.min(p.flexibility+p.interest_home_hd,6)},{l:'家庭支持',v:Math.min(p.family_support+p.home_feasibility,6)},{l:'移植興趣',v:Math.min(p.interest_transplant+p.long_term_adherence,6)}];
-  const N=ax.length,cx=120,cy=120,R=75,max=6,ang=i=>(Math.PI*2/N)*i-Math.PI/2,pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
-  let g='';
-  for(let r=1;r<=3;r++){g+=`<polygon points="${ax.map((_,i)=>pt(i,R*r/3).join(',')).join(' ')}" fill="none" stroke="#c8c0a0" stroke-width="1"/>`;}
-  g+=ax.map((_,i)=>{const[x,y]=pt(i,R);return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#c8c0a0" stroke-width="1"/>`;}).join('');
-  g+=`<polygon points="${ax.map((a,i)=>pt(i,R*(a.v/max)).join(',')).join(' ')}" fill="rgba(43,181,160,0.22)" stroke="#2bb5a0" stroke-width="2"/>`;
-  g+=ax.map((a,i)=>{const[x,y]=pt(i,R*(a.v/max));return`<circle cx="${x}" cy="${y}" r="4" fill="#2bb5a0"/>`;}).join('');
-  g+=ax.map((a,i)=>{const[x,y]=pt(i,R+18);return`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#6b4c28" font-family="Nunito,sans-serif" font-weight="700">${a.l}</text>`;}).join('');
-  return`<svg width="240" height="240" viewBox="0 0 240 240" style="background:#fff8e8;border-radius:50%;border:3px solid #c8c0a0">${g}</svg>`;
+// ─────────────────────────────────────────────
+// NPC SVG
+// ─────────────────────────────────────────────
+function npcSVG(av,delay,size){
+  const d=delay||0,sz=size||48;
+  const chars={'🧑‍⚕️':{body:'#7ecfb0',head:'#f5d4a8',hair:'#4a3010',shirt:'#2bb5a0',acc:'stethoscope'},'👩‍⚕️':{body:'#f5a0b8',head:'#f5c8a0',hair:'#3d2010',shirt:'#e8829a',acc:'stethoscope'},'🧑':{body:'#a0c8f0',head:'#f5c890',hair:'#5c3d1e',shirt:'#5588cc',acc:'none'},'🧑‍🔧':{body:'#f0c060',head:'#f5c890',hair:'#3d2010',shirt:'#d4a030',acc:'wrench'},'👩':{body:'#d0a8e8',head:'#f5c8a0',hair:'#2c1808',shirt:'#9060c0',acc:'none'},'👴':{body:'#c8c8c8',head:'#f0c8a0',hair:'#d8d8d8',shirt:'#888888',acc:'cane'}};
+  const c=chars[av]||{body:'#a8d8a8',head:'#f5c890',hair:'#5c3d1e',shirt:'#52b84a',acc:'none'};
+  const sd='animation-delay:'+d+'s';
+  let acc='';
+  if(c.acc==='stethoscope')acc='<path d="M22,30 Q18,36 20,42 Q22,46 26,44" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="26" cy="45" r="3" fill="#aaa" stroke="#888" stroke-width="1"/>';
+  if(c.acc==='wrench')acc='<rect x="30" y="28" width="4" height="14" rx="2" fill="#c8a030" transform="rotate(20,32,35)"/>';
+  if(c.acc==='cane')acc='<path d="M34,44 Q36,42 34,28" stroke="#c8903a" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
+  return '<svg width="'+sz+'" height="'+(sz*1.4)+'" viewBox="0 0 48 72" xmlns="http://www.w3.org/2000/svg"><g style="animation:npc-sway 2s ease-in-out infinite;transform-origin:24px 60px;'+sd+'"><ellipse cx="24" cy="70" rx="14" ry="3" fill="rgba(0,0,0,.1)"/><rect x="14" y="36" width="20" height="22" rx="8" fill="'+c.body+'" stroke="'+c.shirt+'" stroke-width="1.5"/><rect x="14" y="36" width="20" height="8" rx="5" fill="'+c.shirt+'"/><rect x="15" y="54" width="7" height="14" rx="4" fill="'+c.body+'"/><rect x="26" y="54" width="7" height="14" rx="4" fill="'+c.body+'"/><ellipse cx="18" cy="68" rx="5" ry="3.5" fill="'+c.hair+'"/><ellipse cx="30" cy="68" rx="5" ry="3.5" fill="'+c.hair+'"/><rect x="6" y="37" width="8" height="5" rx="3" fill="'+c.body+'" transform="rotate(-15,10,39)"/><rect x="34" y="37" width="8" height="5" rx="3" fill="'+c.body+'" transform="rotate(15,38,39)"/>'+acc+'<g style="animation:blink 3s ease-in-out infinite;transform-origin:24px 22px;'+sd+'"><ellipse cx="24" cy="20" rx="13" ry="14" fill="'+c.head+'" stroke="rgba(0,0,0,.08)" stroke-width="1"/><ellipse cx="24" cy="10" rx="13" ry="8" fill="'+c.hair+'"/><ellipse cx="13" cy="16" rx="5" ry="7" fill="'+c.hair+'"/><ellipse cx="35" cy="16" rx="5" ry="7" fill="'+c.hair+'"/><ellipse cx="18" cy="20" rx="2.5" ry="3" fill="#2c1808"/><circle cx="19" cy="19" r="0.8" fill="white"/><ellipse cx="30" cy="20" rx="2.5" ry="3" fill="#2c1808"/><circle cx="31" cy="19" r="0.8" fill="white"/><ellipse cx="13" cy="24" rx="3" ry="2" fill="'+c.shirt+'" opacity="0.4"/><ellipse cx="35" cy="24" rx="3" ry="2" fill="'+c.shirt+'" opacity="0.4"/><path d="M19,27 Q24,30 29,27" stroke="#c06040" stroke-width="1.5" fill="none" stroke-linecap="round" style="animation:talk .45s ease-in-out infinite;transform-origin:24px 28px;animation-delay:'+(d+0.1)+'s"/></g></g></svg>';
 }
 
+// ─────────────────────────────────────────────
+// FLIP CARDS
+// ─────────────────────────────────────────────
+function renderFlipCards(zoneKey){
+  const cards=ZONE_CARDS[zoneKey];
+  if(!cards||!cards.length)return'';
+  if(S.flipIdx[zoneKey]===undefined)S.flipIdx[zoneKey]=0;
+  const idx=S.flipIdx[zoneKey];
+  const c=cards[idx];
+  const typeLabel={basic:'基本介紹',benefit:'優點',caution:'注意事項'}[c.type]||c.type;
+  const dots=cards.map((_,i)=>'<span class="flip-dot'+(i===idx?' active':'')+'" onclick="flipTo(\''+zoneKey+'\','+i+')"></span>').join('');
+  const pros=(c.pros||[]).map(t=>'<div class="pc-item">'+t+'</div>').join('');
+  const cons=(c.cons||[]).map(t=>'<div class="pc-item">'+t+'</div>').join('');
+  const sceneHTML=c.scene?'<div class="kcard-scene">'+c.scene+'</div>':'';
+  const allRead=idx===cards.length-1;
+  const z=ZONES.find(x=>x.key===zoneKey);
+  // 最後一張：noBoss 顯示「獲得鑰匙」，否則顯示「挑戰關主」
+  let lastBtnHTML='';
+  if(allRead){
+    if(z&&z.noBoss){
+      lastBtnHTML='<button class="btn-boss-start" onclick="harborComplete(\''+zoneKey+'\')" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#e8b820,#c8901a);border-color:var(--yellow2);box-shadow:0 5px 0 var(--yellow2)">'+z.keyEmoji+' 知識卡已讀完，獲得'+z.keyLabel+'！</button>';
+    }else{
+      lastBtnHTML='<button class="btn-boss-start" onclick="startBossPhase(\''+zoneKey+'\')" style="width:100%;margin-top:12px">⚔️ 知識卡已讀完，挑戰關主！</button>';
+    }
+  }
+  return[
+    '<div class="flip-section">',
+    '<div class="flip-nav">',
+    '<span class="flip-nav-label">📚 知識卡 '+(idx+1)+'/'+cards.length+'</span>',
+    '<div class="flip-dots">'+dots+'</div>',
+    '<button class="flip-btn" onclick="flipTo(\''+zoneKey+'\','+(idx-1)+')" '+(idx===0?'disabled':'')+'>‹ 上一張</button>',
+    '<button class="flip-btn" onclick="flipTo(\''+zoneKey+'\','+(idx+1)+')" '+(idx===cards.length-1?'disabled':'')+'>下一張 ›</button>',
+    '</div>',
+    '<div class="kcard">',
+    '<div class="kcard-top">',
+    '<div class="kcard-icon '+c.type+'">'+c.icon+'</div>',
+    '<div class="kcard-meta">',
+    '<div class="kcard-type '+c.type+'">'+typeLabel+'</div>',
+    '<div class="kcard-title">'+c.title+'</div>',
+    '</div></div>',
+    '<div class="kcard-divider"></div>',
+    '<div class="kcard-body">',
+    sceneHTML,
+    '<div class="kcard-desc">'+c.desc+'</div>',
+    '<div class="pc-grid"><div class="pc-col pros"><div class="pc-hdr">✓ 優點</div>'+pros+'</div><div class="pc-col cons"><div class="pc-hdr">! 注意事項</div>'+cons+'</div></div>',
+    '</div></div>',
+    lastBtnHTML,
+    '</div>',
+  ].join('');
+}
+function flipTo(zoneKey,idx){
+  const cards=ZONE_CARDS[zoneKey];
+  if(!cards)return;
+  idx=Math.max(0,Math.min(cards.length-1,idx));
+  S.flipIdx[zoneKey]=idx;
+  const z=ZONES.find(x=>x.key===zoneKey);
+  if(z)renderZone(z);
+}
+
+// ─────────────────────────────────────────────
+// BOSS BATTLE
+// ─────────────────────────────────────────────
+function initBossState(k){
+  if(!S.bossState[k]||S.bossState[k].done===undefined){
+    S.bossState[k]={qIdx:0,done:false,answers:[],showFeedback:false,lastWrong:false};
+  }
+}
+// 啟程渡口：看完卡片直接給鑰匙，不需闖關
+function harborComplete(k){
+  S.bossCleared.add(k);
+  S.visited.add(k);
+  const z=ZONES.find(x=>x.key===k);
+  showVictory(z);
+}
+
+function startBossPhase(k){
+  zonePhase='boss';
+  initBossState(k);
+  const z=ZONES.find(x=>x.key===k);
+  if(z)renderZone(z);
+  document.getElementById('screen-zone').scrollTop=0;
+}
+
+function renderBossArena(z){
+  const k=z.key;
+  initBossState(k);
+  const bs=S.bossState[k];
+  const qs=BOSS_QS[k]||[];
+  const totalQ=qs.length;
+
+  if(bs.done){
+    // Already cleared — show cleared state
+    return '<div class="boss-arena" style="text-align:center;padding:24px">'+
+      '<div style="font-size:40px;margin-bottom:8px">🏆</div>'+
+      '<div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:6px">關主已攻略！</div>'+
+      '<div style="font-size:13px;font-weight:700;color:#c0a0ff;line-height:1.7;margin-bottom:16px">'+z.bossWin+'</div>'+
+      '<button class="boss-retry-btn" onclick="proceedToDialogue(\''+k+'\')">繼續 → 與島民對話</button>'+
+    '</div>';
+  }
+
+  const qi=bs.qIdx;
+  const q=qs[qi];
+  if(!q)return'';
+
+  // HP bar — starts full, drains as questions complete
+  const hpPct=Math.round((qi/totalQ)*100);
+
+  // Progress pips
+  const pips=qs.map((_,i)=>{
+    const st=i<qi?'done-ok':i===qi?'active':'';
+    return'<div class="boss-q-pip '+st+'">'+(i<qi?'✓':(i+1))+'</div>';
+  }).join('');
+
+  const optsHTML=q.opts.map((o,oi)=>{
+    let cls='boss-opt';
+    if(bs.showFeedback){
+      if(oi===q.correct)cls+=' correct';
+      else if(bs.lastWrong&&oi===bs.lastAnswer)cls+=' wrong';
+    }
+    const disabled=bs.showFeedback?'disabled':'';
+    return'<button class="'+cls+'" onclick="bossPick(\''+k+'\','+qi+','+oi+')" '+disabled+'>'+o+'</button>';
+  }).join('');
+
+  const fbHTML=bs.showFeedback&&bs.lastWrong?
+    '<div class="boss-feedback">'+q.exp+'</div>'+
+    '<button class="boss-retry-btn" onclick="bossRetry(\''+k+'\')">🔄 再試一次！</button>':'';
+  const correctFbHTML=bs.showFeedback&&!bs.lastWrong?
+    '<div class="boss-feedback" style="border-color:rgba(82,184,74,.4);background:rgba(82,184,74,.15);color:#a0ffa0;">✅ 答對了！正在進入下一題...</div>':'';
+
+  return'<div class="boss-arena">'+
+    '<div class="boss-title-row">'+
+      '<span class="boss-title-badge">⚔️ 關主挑戰</span>'+
+      '<span class="boss-title-txt">'+z.bossName+' 的考驗</span>'+
+    '</div>'+
+    '<div class="boss-hp-row"><span class="boss-hp-lbl">關主血量</span><div class="boss-hp-track"><div class="boss-hp-fill" style="width:'+(100-hpPct)+'%"></div></div></div>'+
+    '<div class="boss-progress-row">'+pips+'<span class="boss-q-lbl">第 '+(qi+1)+'/'+totalQ+' 題</span></div>'+
+    '<div class="boss-fight-row">'+
+      '<div class="boss-npc-wrap">'+npcSVG(z.bossAv,0,72)+'</div>'+
+      '<div class="boss-speech-wrap">'+
+        '<div class="boss-speech">'+
+          '<div class="boss-npc-name">'+z.bossName+'</div>'+
+          '<div class="boss-q">'+(qi===0?z.bossIntro+' 第一題：':'')+q.q+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="boss-opts">'+optsHTML+'</div>'+
+    fbHTML+correctFbHTML+
+  '</div>';
+}
+
+function bossPick(k,qi,oi){
+  const qs=BOSS_QS[k]||[];
+  const q=qs[qi];
+  if(!q)return;
+  const bs=S.bossState[k];
+  const correct=oi===q.correct;
+  bs.lastAnswer=oi;
+  bs.lastWrong=!correct;
+  bs.showFeedback=true;
+  const z=ZONES.find(x=>x.key===k);
+  renderZone(z);
+  if(correct){
+    setTimeout(()=>{
+      bs.showFeedback=false;
+      bs.qIdx++;
+      if(bs.qIdx>=qs.length){
+        // BOSS DEFEATED
+        bs.done=true;
+        S.bossCleared.add(k);
+        showVictory(z);
+      }else{
+        renderZone(z);
+      }
+    },900);
+  }
+}
+function bossRetry(k){
+  const bs=S.bossState[k];
+  bs.showFeedback=false;bs.lastWrong=false;
+  const z=ZONES.find(x=>x.key===k);
+  renderZone(z);
+}
+
+// ─────────────────────────────────────────────
+// VICTORY SCREEN
+// ─────────────────────────────────────────────
+function showVictory(z){
+  const vo=document.getElementById('victory-overlay');
+  document.getElementById('victory-emoji').textContent=z.keyEmoji;
+  document.getElementById('victory-title').textContent='🎉 關主攻略！';
+  document.getElementById('victory-sub').textContent=z.bossWin;
+  document.getElementById('key-reward-icon').textContent=z.keyEmoji;
+  document.getElementById('key-reward-txt').textContent='獲得「'+z.keyLabel+'」！';
+  const cleared=S.bossCleared.size;
+  const remaining=ZONES.length-cleared;
+  document.getElementById('key-reward-sub').textContent=remaining>0?
+    '還剩 '+remaining+' 個區域待攻略！':'集齊全部鑰匙！決策廣場已解鎖！';
+  // Particles
+  const pp=document.getElementById('victory-particles');
+  pp.innerHTML='';
+  const emojis=['🌟','✨','🎊','🗝️','🌸','🎉','💫','🍃'];
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText='left:'+(Math.random()*100)+'%;top:'+(30+Math.random()*60)+'%;animation-delay:'+(Math.random()*1)+'s;animation-duration:'+(1+Math.random())+'s;';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    pp.appendChild(p);
+  }
+  vo.style.display='flex';
+  document.getElementById('victory-continue-btn').onclick=()=>{
+    vo.style.display='none';
+    // Mark zone as fully done (no dialogue phase needed anymore)
+    S.visited.add(z.key);
+    showMap();
+  };
+}
+
+function proceedToDialogue(k){
+  zonePhase='dialogue';
+  const z=ZONES.find(x=>x.key===k);
+  if(z)renderZone(z);
+  document.getElementById('screen-zone').scrollTop=0;
+}
+
+// ─────────────────────────────────────────────
+// SCREEN ROUTING
+// ─────────────────────────────────────────────
 function scr(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('screen-'+id);
-  el.classList.add('active');
-  el.scrollTop=0;
+  el.classList.add('active');el.scrollTop=0;
 }
-
 function startGame(){
   const n=document.getElementById('name-inp').value.trim();
-  S.playerName=n||'旅人';save();showMap();
+  S.playerName=n||'旅人';
+  showMap();
+}
+
+function toggleFont(){
+  document.body.classList.toggle('large-font');
+  document.getElementById('font-btn').textContent=document.body.classList.contains('large-font')?'A 一般':'A+ 大字';
 }
 
 function showMap(){
   scr('map');
   document.getElementById('map-pname').textContent='🌿 '+S.playerName;
-  const total=ZONES.length+1,done=S.visited.size;
-  document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';
-  document.getElementById('prog-lbl').textContent=`探索 ${done}/${total}`;
-  document.getElementById('card-cnt').textContent=`${S.cards.size} 張卡`;
-  const grid=document.getElementById('zone-grid');
-  grid.innerHTML='';
-  const all=[...ZONES.map(z=>({...z})),{key:'plaza',label:'決策廣場',emoji:'🧭',cssClass:'plaza',desc:'回顧資訊卡、完成理解確認，產生個人化摘要。',npcs:['小腎｜回顧與整理']}];
+  document.getElementById('prog-fill').style.width=Math.round(S.bossCleared.size/ZONES.length*100)+'%';
+  document.getElementById('prog-lbl').textContent='已攻略 '+S.bossCleared.size+'/'+ZONES.length+' 關';
+  document.getElementById('card-cnt').textContent=S.bossCleared.size===ZONES.length?'🎉 全關通關！':'剩 '+(ZONES.length-S.bossCleared.size)+' 關';
+
+  // Key row
+  const kr=document.getElementById('key-row');
+  const keyHtml=ZONES.map(z=>'<span class="key-icon'+(S.bossCleared.has(z.key)?'':' locked')+'" title="'+z.keyLabel+'">'+z.keyEmoji+'</span>').join('');
+  kr.innerHTML='<span class="key-row-lbl">🗝️ 鑰匙：</span>'+keyHtml+'<span class="key-count">'+S.bossCleared.size+'/'+ZONES.length+'</span>';
+
+  const grid=document.getElementById('zone-grid');grid.innerHTML='';
+  const plazaLocked=S.bossCleared.size<ZONES.length;
+  const all=[...ZONES.map(z=>({...z})),{key:'plaza',label:'決策廣場',emoji:'🧭',cssClass:'plaza',desc:'集滿所有鑰匙後，在這裡分享偏好並產生個人化摘要。',npcs:['小腎｜整理偏好']}];
   all.forEach(z=>{
-    const done=S.visited.has(z.key),locked=z.key==='plaza'&&S.visited.size<ZONES.length;
+    const isBossDone=S.bossCleared.has(z.key);
+    const isPlazaDone=S.visited.has('plaza');
+    const locked=(z.key==='plaza'&&plazaLocked);
     const t=document.createElement('div');
-    t.className=`ztile ${z.cssClass||z.key}${done?' done':''}${locked?' locked':''}`;
+    const tileComplete=(z.key==='plaza'?isPlazaDone:isBossDone);
+    t.className='ztile '+(z.cssClass||z.key)+(tileComplete?' done':'')+(locked?' locked':'');
     if(!locked)t.onclick=()=>goZone(z.key);
-    const b=done?`<span class="zbadge done">✓ 已完成</span>`:locked?`<span class="zbadge lock">🔒 完成前五區後開放</span>`:`<span class="zbadge go">出發 →</span>`;
-    t.innerHTML=`<span class="ze">${z.emoji}</span><div class="ztile-name">${z.label}</div><div class="ztile-desc">${z.desc}</div><div class="ztile-npcs">島民：${(z.npcs||[]).join('、')}</div>${b}`;
+    let badge='';
+    if(z.key==='plaza'){
+      badge=plazaLocked?'<span class="zbadge lock">🔒 集滿'+ZONES.length+'把鑰匙後開放</span>':isPlazaDone?'<span class="zbadge done">✓ 摘要已產生</span>':'<span class="zbadge go">🧭 進入廣場 →</span>';
+    }else if(isBossDone){
+      badge='<span class="zbadge done">✓ 已攻略</span>';
+    }else{
+      badge='<span class="zbadge boss">⚔️ 闖關</span>';
+    }
+    const keyTag=isBossDone?'<span style="font-size:18px;margin-left:4px">'+z.keyEmoji+'</span>':'';
+    t.innerHTML='<span class="ze">'+z.emoji+'</span>'+keyTag+'<div class="ztile-name">'+z.label+'</div><div class="ztile-desc">'+z.desc+'</div><div class="ztile-npcs">關主：'+(z.bossName||'')+'</div>'+badge;
     grid.appendChild(t);
   });
 }
@@ -580,92 +1037,62 @@ function showMap(){
 function goZone(k){
   if(k==='plaza'){scr('plaza');renderPlaza();return;}
   const z=ZONES.find(x=>x.key===k);if(!z)return;
+  S._currentZone=k;
   scr('zone');
   document.getElementById('zone-title').textContent=z.emoji+' '+z.label;
+  const zoneOrder=['harbor','transplant','pd','home_hd','center_hd'];
+  const zIdx=zoneOrder.indexOf(k)+1;
+  const pb=document.getElementById('zone-progress-bar');
+  if(pb){
+    const dots=zoneOrder.map((zk,i)=>'<div class="zone-step-dot'+(zk===k?' cur':S.bossCleared.has(zk)?' done':'')+'" title="'+(i+1)+'"></div>').join('');
+    pb.innerHTML='<span style="white-space:nowrap">第 '+zIdx+' 站，共 5 站</span><div class="zone-step-dots">'+dots+'</div>';
+  }
+  // Determine phase: if boss cleared, show cleared; else cards
+  zonePhase=S.bossCleared.has(k)?'done':'cards';
   renderZone(z);
 }
 
-function npcSVG(av, delay){
-  const d = delay||0;
-  const chars = {
-    '🧑‍⚕️': {body:'#7ecfb0',head:'#f5d4a8',hair:'#4a3010',shirt:'#2bb5a0',acc:'stethoscope'},
-    '👩‍⚕️': {body:'#f5a0b8',head:'#f5c8a0',hair:'#3d2010',shirt:'#e8829a',acc:'stethoscope'},
-    '🧑':   {body:'#a0c8f0',head:'#f5c890',hair:'#5c3d1e',shirt:'#5588cc',acc:'none'},
-    '🧑‍🔧': {body:'#f0c060',head:'#f5c890',hair:'#3d2010',shirt:'#d4a030',acc:'wrench'},
-    '👩':   {body:'#d0a8e8',head:'#f5c8a0',hair:'#2c1808',shirt:'#9060c0',acc:'none'},
-    '👴':   {body:'#c8c8c8',head:'#f0c8a0',hair:'#d8d8d8',shirt:'#888888',acc:'cane'},
-  };
-  const c = chars[av] || {body:'#a8d8a8',head:'#f5c890',hair:'#5c3d1e',shirt:'#52b84a',acc:'none'};
-  const sd = `animation-delay:${d}s`;
+function renderZone(z){
+  const k=z.key;
+  const bossDone=S.bossCleared.has(k);
 
-  let acc = '';
-  if(c.acc==='stethoscope') acc = `<path d="M22,30 Q18,36 20,42 Q22,46 26,44" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="26" cy="45" r="3" fill="#aaa" stroke="#888" stroke-width="1"/>`;
-  if(c.acc==='wrench') acc = `<rect x="30" y="28" width="4" height="14" rx="2" fill="#c8a030" transform="rotate(20,32,35)"/>`;
-  if(c.acc==='cane')   acc = `<path d="M34,44 Q36,42 34,28" stroke="#c8903a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  let html='';
+  // Narrative — parse \n for line breaks
+  const narrativeLines=z.narrative.split('\n');
+  const narrativeHTML=narrativeLines.map(l=>l?'<p style="margin-bottom:8px">'+l+'</p>':'').join('');
+  html+='<div class="narrative-board"><div class="narrative-txt">'+narrativeHTML+'</div></div>';
 
-  return `<svg width="64" height="72" viewBox="0 0 48 72" xmlns="http://www.w3.org/2000/svg">
-    <g class="npc-body" style="${sd}">
-      <!-- shadow -->
-      <ellipse cx="24" cy="70" rx="14" ry="3" fill="rgba(0,0,0,0.1)"/>
-      <!-- body -->
-      <rect x="14" y="36" width="20" height="22" rx="8" fill="${c.body}" stroke="${c.shirt}" stroke-width="1.5"/>
-      <!-- shirt detail -->
-      <rect x="14" y="36" width="20" height="8" rx="5" fill="${c.shirt}"/>
-      <!-- legs -->
-      <rect x="15" y="54" width="7" height="14" rx="4" fill="${c.body}"/>
-      <rect x="26" y="54" width="7" height="14" rx="4" fill="${c.body}"/>
-      <!-- shoes -->
-      <ellipse cx="18" cy="68" rx="5" ry="3.5" fill="${c.hair}"/>
-      <ellipse cx="30" cy="68" rx="5" ry="3.5" fill="${c.hair}"/>
-      <!-- left arm -->
-      <rect x="6" y="37" width="8" height="5" rx="3" fill="${c.body}" transform="rotate(-15,10,39)"/>
-      <!-- right arm (holds acc) -->
-      <rect x="34" y="37" width="8" height="5" rx="3" fill="${c.body}" transform="rotate(15,38,39)"/>
-      ${acc}
-      <!-- head -->
-      <g class="npc-blink" style="transform-origin:24px 22px;${sd}">
-        <ellipse cx="24" cy="20" rx="13" ry="14" fill="${c.head}" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
-        <!-- hair -->
-        <ellipse cx="24" cy="10" rx="13" ry="8" fill="${c.hair}"/>
-        <ellipse cx="13" cy="16" rx="5" ry="7" fill="${c.hair}"/>
-        <ellipse cx="35" cy="16" rx="5" ry="7" fill="${c.hair}"/>
-        <!-- eyes -->
-        <g style="transform-origin:18px 20px">
-          <ellipse cx="18" cy="20" rx="2.5" ry="3" fill="#2c1808"/>
-          <circle cx="19" cy="19" r="0.8" fill="white"/>
-        </g>
-        <g style="transform-origin:30px 20px">
-          <ellipse cx="30" cy="20" rx="2.5" ry="3" fill="#2c1808"/>
-          <circle cx="31" cy="19" r="0.8" fill="white"/>
-        </g>
-        <!-- blush -->
-        <ellipse cx="13" cy="24" rx="3" ry="2" fill="${c.shirt}" opacity="0.4"/>
-        <ellipse cx="35" cy="24" rx="3" ry="2" fill="${c.shirt}" opacity="0.4"/>
-        <!-- mouth (talking) -->
-        <path class="npc-talk" d="M19,27 Q24,30 29,27" stroke="#c06040" stroke-width="1.5" fill="none" stroke-linecap="round" style="animation-delay:${d+0.1}s"/>
-      </g>
-    </g>
-  </svg>`;
+  if(!bossDone){
+    if(zonePhase==='boss'){
+      html+=renderBossArena(z);
+    }else{
+      // cards phase
+      html+=renderFlipCards(k);
+    }
+  }else{
+    // Boss already cleared — show cleared state
+    html+='<div class="phase-banner"><span class="phase-banner-icon">'+z.keyEmoji+'</span><div><div class="phase-banner-txt">關主已攻略！鑰匙已收入背包</div><div class="phase-banner-sub">前往決策廣場，整理你的偏好與想法</div></div></div>';
+    html+='<button class="btn-ok" onclick="showMap()" style="margin-top:8px">← 返回地圖</button>';
+  }
+
+  document.getElementById('zone-body').innerHTML=html;
 }
 
-function renderZone(z){
-  const done=S.visited.has(z.key);
-  const cH=z.cards.length?`<div class="sec-hdr"><div class="sec-dot" style="background:var(--teal);border-color:var(--teal2)"></div><span class="sec-label">本區知識卡</span></div><div class="icards-row">${z.cards.map(id=>{const c=CARDS[id];return`<div class="icard ${c.category}"><div class="icard-t">${c.title}</div><div class="icard-b">${c.content}</div></div>`;}).join('')}</div>`:'';
-  const qH=z.qs.map(q=>`<div class="q-block"><div class="q-txt">${q.txt}</div><div class="opts">${q.opts.map(o=>`<button class="opt${S.ans[q.key]===o?' sel':''}" data-k="${q.key}" data-v="${o}" onclick="selOpt(this)"${done?' disabled':''}>${o}</button>`).join('')}</div></div>`).join('');
-  const ft=done?`<div class="done-msg">🌟 本區已完成探索！知識卡已加入手冊</div>`:`<button class="btn-ok" id="zok" onclick="doneZone('${z.key}')" disabled>🍀 完成「${z.label}」任務！</button>`;
-  document.getElementById('zone-body').innerHTML=`
-    <div class="narrative-board"><div class="narrative-text">${z.narrative}</div></div>
-    <div style="margin-bottom:16px">${z.dialogue.map((d,i)=>`<div class="dlg-bubble"><div class="npc-face">${npcSVG(d.av, i*0.3)}</div><div class="bubble"><div class="bubble-name">${d.speaker}</div><div class="bubble-txt">${d.text}</div></div></div>`).join('')}</div>
-    ${cH}
-    <div class="sec-hdr" style="margin-top:6px"><div class="sec-dot" style="background:var(--yellow);border-color:var(--yellow2)"></div><span class="sec-label">對話互動</span></div>
-    ${qH}${ft}`;
-  if(!done)chkBtn(z);
+function renderDialogue(z,done){
+  const qH=z.qs.map((q,i)=>{
+    const npc=q.npc||{av:'🧑‍⚕️',name:'島民'};
+    const optsHTML=q.opts.map(o=>'<button class="opt'+(S.ans[q.key]===o?' sel':'')+'" data-k="'+q.key+'" data-v="'+o+'" onclick="selOpt(this)"'+(done?' disabled':'')+'>'+o+'</button>').join('');
+    return'<div class="qa-block"><div class="qa-npc-row"><div class="qa-npc-svg">'+npcSVG(npc.av,i*0.35)+'</div><div class="qa-speech"><div class="qa-npc-name">'+npc.name+'</div><div class="qa-q-txt">'+q.txt+'</div></div></div><div class="qa-opts">'+optsHTML+'</div></div>';
+  }).join('');
+  const sec='<div class="sec-hdr"><div class="sec-dot" style="background:var(--yellow);border-color:var(--yellow2)"></div><span class="sec-lbl">與島民分享你的想法</span></div>';
+  const ft=done?'<div class="done-msg">🌟 本區已完成！如需修改請按右上角「重設本關」</div>':'<button class="btn-ok" id="zok" onclick="doneZone(\''+z.key+'\')" disabled>🍀 完成「'+z.label+'」對話！</button>';
+  return sec+qH+ft;
 }
 
 function selOpt(btn){
   const k=btn.dataset.k,v=btn.dataset.v;
   S.ans[k]=v;
-  document.querySelectorAll(`[data-k="${k}"]`).forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('[data-k="'+k+'"]').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
   const z=ZONES.find(x=>x.qs.some(q=>q.key===k));
   if(z)chkBtn(z);
@@ -674,74 +1101,228 @@ function chkBtn(z){const b=document.getElementById('zok');if(b)b.disabled=!z.qs.
 
 function doneZone(k){
   const z=ZONES.find(x=>x.key===k);
-  applyZone(k,S.ans);S.visited.add(k);save();
-  toast(`🌟「${z.label}」探索完成！`);
+  const before={};Object.keys(S.p).forEach(key=>before[key]=S.p[key]);
+  applyZone(k,S.ans);
+  if(!S._zoneSnap)S._zoneSnap={};
+  const diff={};Object.keys(S.p).forEach(key=>{const d=S.p[key]-before[key];if(d!==0)diff[key]=d;});
+  S._zoneSnap[k]=diff;
+  S.visited.add(k);
+  toast('🌟「'+z.label+'」探索完成！');
   setTimeout(()=>showMap(),1500);
 }
 
+// ─────────────────────────────────────────────
+// PLAZA — 包含原各關的島民偏好對話
+// ─────────────────────────────────────────────
+
+// 所有偏好對話題，依區域分組
+const PLAZA_DIALOGUES=[
+  {zoneKey:'harbor',zoneLabel:'啟程渡口',zoneEmoji:'🚤',zoneColor:'#64c8f0',qs:[
+    {key:'h1',npc:{av:'🧑‍⚕️',name:'小腎'},txt:'我想先了解你現在的狀態。如果要形容你現在的感覺，會比較接近哪一種？',opts:['我很混亂，不知道不同治療的差別','我有一點了解，但還是沒有把握','我最怕自己做錯決定','我想先知道哪種比較符合我的生活']},
+    {key:'h2',npc:{av:'🧑‍⚕️',name:'小腎'},txt:'探索完這座島，你現在最在意的是哪一個？',opts:['我希望有人陪著我、比較安心','我想保有一些生活彈性','我很怕醫療操作，像打針或看到血','我還不確定自己最在意什麼']},
+  ]},
+  {zoneKey:'transplant',zoneLabel:'移植希望山丘',zoneEmoji:'🌄',zoneColor:'#f5a0b8',qs:[
+    {key:'tx1',npc:{av:'👩‍⚕️',name:'林護理師'},txt:'翻完了腎臟移植的知識卡，你最在意的是哪一點？',opts:['生活品質可能比較好，我有興趣','我擔心手術的風險','我擔心等不到合適的腎臟','我還不太清楚移植後要怎麼照顧']},
+    {key:'tx2',npc:{av:'👩‍⚕️',name:'林護理師'},txt:'移植後需要長期服藥與定期追蹤，這對你來說感覺怎麼樣？',opts:['只要生活品質可能更好，我願意配合','我可以接受，但想先了解更多細節','我有點擔心自己能不能長期做到','我現在還不確定']},
+  ]},
+  {zoneKey:'pd',zoneLabel:'腹透花園',zoneEmoji:'🌿',zoneColor:'#78d878',qs:[
+    {key:'pd1',npc:{av:'👩‍⚕️',name:'周護理師'},txt:'腹膜透析需要每天自己規律操作。看完知識卡後，你的感覺比較像哪一種？',opts:['我覺得自己可以慢慢學會','我喜歡這種能自己掌控的感覺','我有點擔心自己會做錯','每天都要做，讓我覺得壓力很大']},
+    {key:'pd2',npc:{av:'🧑',name:'小芸'},txt:'我做腹透兩年了！對於「要特別注意感染預防」，你的感覺是？',opts:['我可以配合，只要有人好好教我','我願意做，但怕自己不夠細心','感覺有點麻煩，需要再考慮','這讓我有點卻步，不太確定能否做到']},
+  ]},
+  {zoneKey:'home_hd',zoneLabel:'居家透析工坊',zoneEmoji:'🏠',zoneColor:'#f5c850',qs:[
+    {key:'hh1',npc:{av:'🧑‍🔧',name:'陳老師'},txt:'居家血液透析時間彈性，但要學習操作和準備設備。你的想法比較像哪一種？',opts:['我願意學，這樣生活比較自由','我需要有人陪我一起學才放心','我擔心家裡空間或條件不夠','我覺得這樣的準備負擔有點大']},
+    {key:'hh2',npc:{av:'👩',name:'林太太'},txt:'如果治療需要家人一起參與，你們家的情況比較像哪一種？',opts:['家人願意一起學習、一起承擔','有人願意幫忙，但能力或時間有限','家裡的支持可能不夠充足','我不想太依賴家人，希望自己來']},
+  ]},
+  {zoneKey:'center_hd',zoneLabel:'洗腎碼頭',zoneEmoji:'🏥',zoneColor:'#a090e8',qs:[
+    {key:'ch1',npc:{av:'👩‍⚕️',name:'黃護理師'},txt:'院所血液透析每週固定到院三次，每次約四小時。你第一個想到的是什麼？',opts:['有醫護人員在旁邊，我比較安心','我擔心交通和時間的安排','我想知道透析過程會不會很不舒服','我不喜歡生活被固定的時間綁住']},
+    {key:'ch2',npc:{av:'👴',name:'陳伯伯'},txt:'我做血透十年了。如果透析中出現不舒服，你希望是哪種情況？',opts:['現場有護理師立刻幫我處理','我自己先學會怎麼判斷也可以','兩種都很重要，最好都有','我沒想過這個問題，需要再想想']},
+  ]},
+];
+
 function renderPlaza(){
   const done=S.visited.has('plaza');
-  const groups=[{l:'🌄 腎臟移植',g:'transplant'},{l:'🌿 腹膜透析',g:'peritoneal_dialysis'},{l:'🏠 居家血液透析',g:'home_hd'},{l:'🏥 醫療院所血液透析',g:'center_hd'},{l:'⭐ 我的在意卡',g:'player_values'}];
-  const jH=groups.map(({l,g})=>{
-    const cs=[...S.cards].map(id=>CARDS[id]).filter(c=>c&&c.group===g);
-    if(!cs.length)return'';
-    return`<div class="jgroup"><div class="jgroup-title">${l}</div><div class="jcards">${cs.map(c=>`<div class="jcard ${c.category}"><div class="jcard-t">${c.title}</div><div class="jcard-b">${c.content}</div></div>`).join('')}</div></div>`;
-  }).join('')||'<div style="font-size:13px;font-weight:700;color:var(--text3);margin-bottom:18px">完成各區域後卡片會顯示在這裡 🌱</div>';
-  const cH=VOPT.map(v=>{const on=S.vals.includes(v),dis=!on&&S.vals.length>=3;return`<span class="chip${on?' chip-on':''}${dis?' chip-off':''}" onclick="togVal('${v}')">${v}</span>`;}).join('');
-  const qH=QUIZ.map((q,i)=>{const a=S.qans['q'+i];return`<div class="qitem"><div class="q-q">${q.q}</div><div class="qbtns">${q.choices.map((c,ci)=>`<button class="qbtn${a!==undefined?(ci===q.correct?' qok':ci===a?' qno':''):''}" onclick="ansQ(${i},${ci})"${a!==undefined?' disabled':''}>${c}</button>`).join('')}</div>${a!==undefined&&a!==q.correct?`<div class="qfb">${q.exp}</div>`:''}</div>`;}).join('');
+
+  // Keys collected display
+  const keysHTML='<div class="keys-collected-box">'+
+    '<div class="keys-collected-title">🗝️ 你收集到的鑰匙</div>'+
+    '<div class="keys-row">'+
+      ZONES.map(z=>'<div class="key-slot"><span class="key-slot-icon'+(S.bossCleared.has(z.key)?'':' empty')+'">'+z.keyEmoji+'</span><span class="key-slot-lbl">'+z.keyLabel+'</span></div>').join('')+
+    '</div>'+
+  '</div>';
+
+  // Preference dialogues — grouped by zone
+  const dialogueHTML='<div class="sec-hdr"><div class="sec-dot" style="background:var(--pink);border-color:var(--pink2)"></div><span class="sec-lbl">與島民分享你的想法</span></div>'+
+    '<div style="font-size:12px;font-weight:700;color:var(--text2);background:rgba(255,255,255,.6);border-radius:10px;padding:10px 14px;margin-bottom:14px;line-height:1.7;">以下問題沒有對錯——誠實選擇最符合你感受的答案，這些回答將用來產生你的個人化摘要。</div>'+
+    PLAZA_DIALOGUES.map(g=>{
+      // Only show groups whose zone is cleared
+      if(!S.bossCleared.has(g.zoneKey))return'';
+      const qsHTML=g.qs.map((q,i)=>{
+        const npc=q.npc||{av:'🧑‍⚕️',name:'島民'};
+        const optsHTML=q.opts.map(o=>'<button class="opt'+(S.ans[q.key]===o?' sel':'')+'" data-k="'+q.key+'" data-v="'+o+'" onclick="plazaSelOpt(this)"'+(done?' disabled':'')+'>'+o+'</button>').join('');
+        return'<div class="qa-block"><div class="qa-npc-row"><div class="qa-npc-svg">'+npcSVG(npc.av,i*0.3)+'</div><div class="qa-speech"><div class="qa-npc-name">'+npc.name+'</div><div class="qa-q-txt">'+q.txt+'</div></div></div><div class="qa-opts">'+optsHTML+'</div></div>';
+      }).join('');
+      return'<div style="margin-bottom:18px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 12px;background:rgba(255,255,255,.5);border-radius:12px;border-left:4px solid '+g.zoneColor+'">'+
+          '<span style="font-size:18px">'+g.zoneEmoji+'</span>'+
+          '<span style="font-size:12px;font-weight:900;color:var(--brown)">'+g.zoneLabel+'</span>'+
+        '</div>'+qsHTML+'</div>';
+    }).join('');
+
+  const valHTML='<div class="val-grid">'+VOPT.map(v=>{
+    const on=S.vals.includes(v),dis=!on&&S.vals.length>=3;
+    return'<button class="val-btn'+(on?' val-on':'')+(dis?' val-off':'')+'" onclick="togVal(\''+v+'\')">'+(on?'★ ':'')+v+'</button>';
+  }).join('')+'</div>';
+
+  const quizHTML='<div class="quiz-wrap">'+QUIZ.map((q,i)=>{
+    const a=S.qans['q'+i];
+    return'<div style="margin-bottom:'+(i<QUIZ.length-1?'14px':'0')+'"><div class="quiz-q-txt">'+(i+1)+'. '+q.q+'</div><div class="qbtns">'+
+      q.choices.map((c,ci)=>'<button class="qbtn'+(a!==undefined?(ci===q.correct?' qok':ci===a?' qno':''):'')+'" onclick="ansQ('+i+','+ci+')"'+(a!==undefined?' disabled':'')+'>'+c+'</button>').join('')+
+      '</div>'+(a!==undefined&&a!==q.correct?'<div class="qfb">'+q.exp+'</div>':'')+'</div>';
+  }).join('')+'</div>';
+
   let rH='';
   if(done){
     const r=evaluate();
-    rH=`<div class="sec-hdr"><div class="sec-dot" style="background:var(--pink);border-color:var(--pink2)"></div><span class="sec-label">你的個人化摘要</span></div>
-    <div class="result-board">
-      <div class="result-title">${r.title}</div>
-      ${r.summary.map(s=>`<div class="rline">${s}</div>`).join('')}
-      <div class="rtags">${(r.tv||[]).map(v=>`<span class="rtag">${v}</span>`).join('')}</div>
-      <div class="rreco"><div class="rreco-lbl">🌟 你可能想優先進一步了解</div><div class="rreco-val">${r.recs.join(' / ')}</div></div>
-    </div>
-    <div class="radar-c">${radarSVG()}</div>
-    <div class="disclaimer">本遊戲僅供教育參考用途，結果反映你目前的想法，不能取代醫師、護理師與醫療團隊的個別化評估與建議。請攜帶此摘要與你的醫療團隊和家人進一步討論。</div>
-    <button class="btn-dl" onclick="dlSum()">🎀 下載我的決策摘要</button>`;
+    const tagsHTML=(r.tv||[]).map(v=>'<span class="rtag">'+v+'</span>').join('');
+    rH='<div class="result-board">'+
+        '<div class="result-title">'+r.title+'</div>'+
+        '<div class="result-summary">'+r.summary+'</div>'+
+        '<div class="result-dir-box"><div class="result-dir-lbl">📍 方向性建議</div><div class="result-dir-txt">'+r.direction+'</div></div>'+
+        '<div class="result-advice-box"><div class="result-advice-lbl">🗣️ 下一步行動建議</div><div class="result-advice-txt">'+r.advice+'</div></div>'+
+        '<div style="font-size:11px;font-weight:800;color:var(--text3);margin-bottom:6px">你最在意的面向</div>'+
+        '<div class="rtags">'+tagsHTML+'</div>'+
+        '<div style="font-size:11px;font-weight:800;color:var(--text3);margin:10px 0 6px">可進一步了解的方向</div>'+
+        '<div class="result-reco-row"><div class="reco-pill">★ '+r.recs[0]+'</div><div class="reco-pill second">'+r.recs[1]+'</div></div>'+
+      '</div>'+
+      '<div class="radar-c">'+radarSVG()+'<div class="radar-legend"><div class="radar-legend-dot"></div>你的偏好分布（滿分 6 分）</div><div class="radar-annotation">'+buildRadarAnnotation(r)+'</div></div>'+
+      buildFamilyBox(r)+
+      '<div class="disclaimer">本結果僅供教育參考，不取代醫師的個別化評估。每種治療方式各有適合的對象，最終請與你的醫療團隊共同討論決定。</div>'+
+      '<button class="btn-print" onclick="doPrint()">🖨️ 列印 / 儲存為 PDF</button>'+
+      '<button class="btn-dl" onclick="dlSum()">🎀 下載決策摘要</button>';
   }
-  document.getElementById('plaza-body').innerHTML=`
-    <div class="sec-hdr"><div class="sec-dot" style="background:var(--wood);border-color:var(--wood2)"></div><span class="sec-label">我的知識手冊</span></div>
-    ${jH}
-    <div class="sec-hdr"><div class="sec-dot" style="background:var(--yellow);border-color:var(--yellow2)"></div><span class="sec-label">再選一次你最重視的面向（最多 3 項）</span></div>
-    <div class="chips" id="chips">${cH}</div>
-    <div class="sec-hdr"><div class="sec-dot" style="background:var(--green);border-color:var(--green2)"></div><span class="sec-label">理解確認</span></div>
-    <div id="quiz">${qH}</div>
-    ${!done?`<button class="btn-ok" onclick="donePlaza()" style="margin-top:12px">🌟 產生我的決策摘要！</button>`:''}
-    <div id="result">${rH}</div>`;
+
+  // Check if all dialogue answers filled
+  const allQKeys=PLAZA_DIALOGUES.flatMap(g=>S.bossCleared.has(g.zoneKey)?g.qs.map(q=>q.key):[]);
+  const allAnswered=allQKeys.every(k=>S.ans[k]);
+
+  document.getElementById('plaza-body').innerHTML=
+    keysHTML+
+    dialogueHTML+
+    '<div class="sec-hdr"><div class="sec-dot" style="background:var(--yellow);border-color:var(--yellow2)"></div><span class="sec-lbl">你最在意的事（選最多 3 項）</span></div>'+
+    valHTML+
+    '<div class="sec-hdr"><div class="sec-dot" style="background:var(--green);border-color:var(--green2)"></div><span class="sec-lbl">理解確認</span></div>'+
+    quizHTML+
+    (!done?'<button class="btn-ok" onclick="donePlaza()" id="plaza-submit-btn" style="margin-top:14px" '+(allAnswered?'':'disabled')+'>🌟 產生我的決策摘要！</button>':'')+
+    '<div id="result" style="margin-top:20px">'+rH+'</div>';
 }
 
-function togVal(v){
-  if(S.visited.has('plaza'))return;
-  const i=S.vals.indexOf(v);
-  if(i>=0)S.vals.splice(i,1);else if(S.vals.length<3)S.vals.push(v);else return;
-  renderPlaza();
+function plazaSelOpt(btn){
+  const k=btn.dataset.k,v=btn.dataset.v;
+  S.ans[k]=v;
+  document.querySelectorAll('[data-k="'+k+'"]').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  // Check if all answered to enable submit btn
+  const allQKeys=PLAZA_DIALOGUES.flatMap(g=>S.bossCleared.has(g.zoneKey)?g.qs.map(q=>q.key):[]);
+  const allAnswered=allQKeys.every(key=>S.ans[key]);
+  const sb=document.getElementById('plaza-submit-btn');
+  if(sb)sb.disabled=!allAnswered;
 }
-function ansQ(qi,ci){
-  if(S.qans['q'+qi]!==undefined)return;
-  S.qans['q'+qi]=ci;save();renderPlaza();
-}
+
+function togVal(v){if(S.visited.has('plaza'))return;const i=S.vals.indexOf(v);if(i>=0)S.vals.splice(i,1);else if(S.vals.length<3)S.vals.push(v);else return;renderPlaza();}
+function ansQ(qi,ci){if(S.qans['q'+qi]!==undefined)return;S.qans['q'+qi]=ci;renderPlaza();}
 function donePlaza(){
+  // Apply all zone preference scores from plaza dialogues
+  ZONES.forEach(z=>{
+    if(S.bossCleared.has(z.key)){
+      const before={};Object.keys(S.p).forEach(key=>before[key]=S.p[key]);
+      applyZone(z.key,S.ans);
+      if(!S._zoneSnap)S._zoneSnap={};
+      const diff={};Object.keys(S.p).forEach(key=>{const d=S.p[key]-before[key];if(d!==0)diff[key]=d;});
+      S._zoneSnap[z.key]=diff;
+    }
+  });
+  // Apply value selections
   const m={'安心感與醫護支持':'medical_support','生活彈性':'flexibility','自主參與':'autonomy','減少打針或看到血的不安':'fear_needles','家庭支持':'family_support','居家安排可行性':'home_feasibility','我還需要更多資訊':'need_more_info'};
   S.vals.forEach(v=>{if(m[v])S.p[m[v]]++;});
-  S.visited.add('plaza');save();toast('🎉 摘要已產生！');setTimeout(()=>renderPlaza(),500);
+  S.visited.add('plaza');
+  toast('🎉 你的摘要已產生！');
+  setTimeout(()=>renderPlaza(),400);
+}
+
+// ─────────────────────────────────────────────
+// RADAR & ANALYSIS
+// ─────────────────────────────────────────────
+function radarSVG(){
+  const p=S.p;
+  const ax=[
+    {l:'醫護支持',v:Math.min(p.medical_support+p.interest_center_hd,6)},
+    {l:'自主參與',v:Math.min(p.autonomy+p.interest_pd,6)},
+    {l:'生活彈性',v:Math.min(p.flexibility+p.interest_home_hd,6)},
+    {l:'家庭支持',v:Math.min(p.family_support+p.home_feasibility,6)},
+    {l:'移植傾向',v:Math.min(p.interest_transplant+p.long_term_adherence,6)},
+  ];
+  const N=ax.length,cx=150,cy=150,R=90,max=6;
+  const ang=i=>(Math.PI*2/N)*i-Math.PI/2;
+  const pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
+  let g='';
+  [2,4,6].forEach(v=>{
+    const r=R*(v/max);const pts=ax.map((_,i)=>pt(i,r).join(',')).join(' ');
+    g+='<polygon points="'+pts+'" fill="none" stroke="#c8c0a0" stroke-width="0.8" stroke-dasharray="'+(v<6?'3,2':'none')+'"/>';
+    const [lx,ly]=pt(0,r);
+    g+='<text x="'+(lx+6)+'" y="'+ly+'" font-size="9" fill="#a09070" font-family="Nunito,sans-serif" dominant-baseline="central">'+v+'</text>';
+  });
+  g+='<text x="'+(cx+5)+'" y="'+cy+'" font-size="9" fill="#c8b898" font-family="Nunito,sans-serif" dominant-baseline="central">0</text>';
+  g+=ax.map((_,i)=>{const[x,y]=pt(i,R);return'<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="#c8c0a0" stroke-width="1"/>';}).join('');
+  const dataPts=ax.map((a,i)=>pt(i,R*(a.v/max)).join(',')).join(' ');
+  g+='<polygon points="'+dataPts+'" fill="rgba(43,181,160,.25)" stroke="#2bb5a0" stroke-width="2"/>';
+  g+=ax.map((a,i)=>{const[x,y]=pt(i,R*(a.v/max));return'<circle cx="'+x+'" cy="'+y+'" r="5" fill="#2bb5a0" stroke="white" stroke-width="1.5"/><text x="'+x+'" y="'+(y-10)+'" text-anchor="middle" font-size="9" fill="#1d8c7a" font-family="Nunito,sans-serif" font-weight="700">'+a.v+'</text>';}).join('');
+  g+=ax.map((a,i)=>{const[x,y]=pt(i,R+22);return'<text x="'+x+'" y="'+y+'" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#6b4c28" font-family="Nunito,sans-serif" font-weight="700">'+a.l+'</text>';}).join('');
+  return'<svg width="300" height="300" viewBox="0 0 300 300" style="background:#fff8e8;border-radius:16px;border:3px solid #c8c0a0">'+g+'</svg>';
+}
+function buildRadarAnnotation(r){
+  const p=S.p;
+  const axes=[{label:'醫護支持',v:Math.min(p.medical_support+p.interest_center_hd,6),hint:'你比較重視在醫院有人照顧'},{label:'自主參與',v:Math.min(p.autonomy+p.interest_pd,6),hint:'你傾向自己掌握治療'},{label:'生活彈性',v:Math.min(p.flexibility+p.interest_home_hd,6),hint:'你希望治療配合生活節奏'},{label:'家庭支持',v:Math.min(p.family_support+p.home_feasibility,6),hint:'家人支持對你的選擇很重要'},{label:'移植傾向',v:Math.min(p.interest_transplant+p.long_term_adherence,6),hint:'你對腎臟移植有較高期待'}];
+  const top=axes.reduce((a,b)=>a.v>=b.v?a:b);
+  if(top.v===0)return'完成更多關卡後，雷達圖會顯示你的偏好分布。';
+  return'你的雷達圖顯示：<strong>'+top.label+'</strong>分數最高（'+top.v+' 分）——'+top.hint+'。這與「'+r.recs[0]+'」的特性相符。';
+}
+function buildFamilyBox(r){
+  const qmap={'腎臟移植':['什麼條件才能接受腎臟移植評估？','等待期間需要進行什麼透析？','移植後的回診頻率是多久一次？'],'腹膜透析':['換液操作需要多長時間學會？','家裡需要準備什麼樣的空間？','如果出現腹膜炎，要怎麼處理？'],'居家血液透析':['設備安裝評估要找誰聯繫？','家人需要學習哪些操作步驟？','遠端監測是如何進行的？'],'醫療院所血液透析':['可以選擇透析的時段嗎？','有申請交通補助的方式嗎？','如果以後想換透析方式，可以嗎？'],'mixed':['不同治療方式，主要的生活差異是什麼？','如何知道自己適合哪一種？','可以先試試看再決定嗎？']};
+  const qs=qmap[r.style]||qmap.mixed;
+  return'<div class="family-box"><div class="family-box-title">👨‍👩‍👧 給家人的說明</div><div class="family-box-body">這份摘要顯示，<strong>'+S.playerName+'</strong>目前'+r.title.replace('你','他/她')+'。<br>下次門診時，可以帶著這份摘要，請醫師或護理師說明以下問題：</div><div class="family-questions">'+qs.map(q=>'<div class="family-q">'+q+'</div>').join('')+'</div></div>';
+}
+
+// ─────────────────────────────────────────────
+// PRINT / DOWNLOAD
+// ─────────────────────────────────────────────
+function doPrint(){
+  const r=evaluate();
+  const pa=document.getElementById('print-area');
+  pa.innerHTML='<div style="font-family:sans-serif;padding:20px;max-width:600px;margin:0 auto">'+
+    '<h2 style="color:#2bb5a0;margin-bottom:4px">新腎小島｜個人化決策摘要</h2>'+
+    '<p style="color:#888;font-size:13px;margin-bottom:16px">島民：'+S.playerName+'</p>'+
+    '<div style="background:#eaf8e4;border-left:4px solid #52b84a;padding:12px 14px;margin-bottom:12px;border-radius:0 8px 8px 0"><div style="font-size:11px;color:#3a9030;font-weight:700;margin-bottom:4px">你目前的狀態</div><div style="font-size:14px;font-weight:700">'+r.title+'</div></div>'+
+    '<div style="background:#f5f5f5;padding:12px 14px;border-radius:8px;margin-bottom:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">整體說明</div><div style="font-size:13px">'+r.summary+'</div></div>'+
+    '<div style="background:#eaf8e4;padding:12px 14px;border-radius:8px;margin-bottom:10px"><div style="font-size:11px;color:#3a9030;margin-bottom:4px">方向性建議</div><div style="font-size:13px;font-weight:700">'+r.direction+'</div></div>'+
+    '<div style="background:#fff8e8;padding:12px 14px;border-radius:8px;margin-bottom:10px"><div style="font-size:11px;color:#c07830;margin-bottom:4px">下一步行動建議</div><div style="font-size:13px">'+r.advice+'</div></div>'+
+    buildFamilyBox(r).replace(/class="[^"]*"/g,'')+
+    '<p style="font-size:11px;color:#999;margin-top:16px;border-top:1px solid #eee;padding-top:10px">本摘要僅供教育參考，不取代醫師的個別化評估。最終治療方式請與醫療團隊共同討論決定。</p>'+
+  '</div>';
+  window.print();
 }
 function dlSum(){
   const r=evaluate();
   const qs=QUIZ.filter((_,i)=>S.qans['q'+i]===QUIZ[i].correct).length;
-  const cs=[...S.cards].map(id=>CARDS[id]).filter(Boolean);
-  const ln=['新腎小島｜個人化決策摘要','='.repeat(28),`島民稱呼：${S.playerName}`,'','一、你目前較在意的方向',r.title,'','二、摘要',...r.summary.map(s=>'・'+s),'','三、你較在意的面向',...(r.tv||[]).map(v=>'・'+v),'','四、你可能想優先進一步了解',...r.recs.map(x=>'・'+x),'','五、已收集的知識卡',...cs.map(c=>`・${c.title}：${c.content}`),'','六、理解確認',`・答對題數：${qs} / ${QUIZ.length}`,'','='.repeat(28),'⚠ 本摘要僅供教育參考，不取代醫師的個別化評估。','  建議攜帶此摘要與醫療團隊和家人進一步討論。'];
+  const visited=Object.keys(ZONE_CARDS).filter(k=>S.visited.has(k)).map(k=>({transplant:'腎臟移植',pd:'腹膜透析',home_hd:'居家血液透析',center_hd:'醫療院所血液透析'}[k]||k));
+  const fqmap={'腎臟移植':['什麼條件才能接受腎臟移植評估？','等待期間需要進行什麼透析？'],'腹膜透析':['換液操作需要多長時間學會？','家裡需要準備什麼樣的空間？'],'居家血液透析':['設備安裝評估要找誰聯繫？','家人需要學習哪些操作步驟？'],'醫療院所血液透析':['可以選擇透析的時段嗎？','有申請交通補助的方式嗎？'],'mixed':['不同治療方式，主要的生活差異是什麼？','如何知道自己適合哪一種？']};
+  const fqs=fqmap[r.style]||fqmap.mixed;
+  const bossCleared=ZONES.filter(z=>S.bossCleared.has(z.key)).map(z=>z.keyEmoji+' '+z.keyLabel).join('、');
+  const ln=['新腎小島｜個人化決策摘要（闖關版）','='.repeat(30),'島民稱呼：'+S.playerName,'收集鑰匙：'+bossCleared,'','【你目前的狀態】',r.title,'','【整體說明】',r.summary,'','【方向性建議】',r.direction,'','【下一步行動建議】',r.advice,'','【你最在意的面向】',...(r.tv||[]).map(v=>'・'+v),'','【可進一步了解的方向】','・首選：'+r.recs[0],'・也可了解：'+r.recs[1],'','【給家人的說明】',S.playerName+'目前'+r.title.replace('你','他/她')+'。','下次門診可詢問醫師的問題：',...fqs.map(q=>'・'+q),'','='.repeat(30),'⚠ 本摘要僅供教育參考，不取代醫師的個別化評估。'];
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([ln.join('\n')],{type:'text/plain;charset=utf-8'}));
-  a.download=`新腎小島_${S.playerName}_摘要.txt`;a.click();
+  a.download='新腎小島_'+S.playerName+'_摘要.txt';a.click();
 }
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
-
-load();
-if(S.visited.size>0)document.getElementById('name-inp').value=S.playerName;
 </script>
 </body>
 </html>
