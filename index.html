@@ -669,7 +669,7 @@ tr:nth-child(even) td{background:#FAFAF8;}
           <input type="tel" id="f-tel" placeholder="09xxxxxxxx 或 02-xxxxxxxx">
           <div class="errmsg" id="e-tel">請輸入有效電話號碼</div>
         </div>
-        <button class="lbtn lbtn-teal" onclick="doPatientLogin(); sendDataToGas();">進入決策輔助系統</button>
+        <button class="lbtn lbtn-teal" onclick="doPatientLogin(); sendPatientData();">進入決策輔助系統</button>
         <p class="lnotice">個人資料受個人資料保護法保障，僅供本次醫療衛教使用。</p>
       </div>
     </div>
@@ -3108,8 +3108,8 @@ function toggleNbPanel() {
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  // 把這段功能存起來，等一下按鈕按下去才執行
-  window.sendDataToGas = async function() {
+  // 🏥 將發送功能綁定給按鈕呼叫
+  window.sendPatientData = async function() {
     try {
       const registration = await navigator.serviceWorker.register('sw.js');
       const permission = await Notification.requestPermission();
@@ -3121,27 +3121,24 @@ function toggleNbPanel() {
         });
 
         if (token) {
-          // 【關鍵修正】：抓取你原本登入卡裡面的姓名 id="f-name"
-          const patientName = document.getElementById('f-name').value.trim() || "未具名個案";
+          // 【核心修正】：正確抓取 f-name 這個欄位的值
+          const realName = document.getElementById('f-name').value.trim() || "未具名個案";
           
           const gasUrl = "https://script.google.com/macros/s/AKfycbwKGFdk4r5KTQ1t9mXyqko80p8wBKthjl5ijRvVtB8yRLDs3g1Sa6iSCxwHA3unm4bOtQ/exec"; 
           
           fetch(gasUrl, {
             method: "POST",
             mode: "no-cors",
-            body: JSON.stringify({ 
-              token: token, 
-              name: patientName 
-            })
+            // 這裡傳送的是變數 realName，不能加引號！
+            body: JSON.stringify({ token: token, name: realName })
           });
-          console.log("資料已發送！病人姓名：" + patientName);
+          console.log("已送出病人姓名：" + realName);
         }
       }
     } catch (err) {
       console.error("發送失敗:", err);
     }
   };
-  // 注意：這裡我們「不」執行它，等按鈕呼叫
 </script>
 </body>
 </html>
