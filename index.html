@@ -3108,8 +3108,8 @@ function toggleNbPanel() {
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  // 🏥 將發送功能綁定給按鈕呼叫
-  window.sendPatientData = async function() {
+  // 🏥 將功能註冊到 window，這樣 HTML 的 onclick 才叫得到它
+  window.initNotificationsAndSend = async function() {
     try {
       const registration = await navigator.serviceWorker.register('sw.js');
       const permission = await Notification.requestPermission();
@@ -3121,24 +3121,41 @@ function toggleNbPanel() {
         });
 
         if (token) {
-          // 【核心修正】：正確抓取 f-name 這個欄位的值
-          const realName = document.getElementById('f-name').value.trim() || "未具名個案";
+          // 【關鍵修正 1】：改為抓取 'f-name'，這是你登入卡中的真實 ID
+          const patientName = document.getElementById('f-name').value.trim() || "未具名個案";
           
           const gasUrl = "https://script.google.com/macros/s/AKfycbwKGFdk4r5KTQ1t9mXyqko80p8wBKthjl5ijRvVtB8yRLDs3g1Sa6iSCxwHA3unm4bOtQ/exec"; 
           
           fetch(gasUrl, {
             method: "POST",
             mode: "no-cors",
-            // 這裡傳送的是變數 realName，不能加引號！
-            body: JSON.stringify({ token: token, name: realName })
+            // 【關鍵修正 2】：傳送真正的變數，不可加引號！
+            body: JSON.stringify({ 
+              token: token, 
+              name: patientName 
+            })
           });
-          console.log("已送出病人姓名：" + realName);
+          console.log("已成功發送個案姓名：" + patientName);
         }
       }
     } catch (err) {
-      console.error("發送失敗:", err);
+      console.error("FCM 註冊或發送失敗:", err);
     }
   };
 </script>
+
+<script>
+  // 處理通知回覆的便利貼功能
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const medicalNote = urlParams.get('reply');
+    if (medicalNote) {
+      alert("👩‍⚕️ 醫護人員回覆：\n\n" + medicalNote);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  });
+</script>
+
 </body>
+</html>
 </html>
