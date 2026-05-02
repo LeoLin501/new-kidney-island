@@ -3134,5 +3134,20 @@ function toggleNbPanel() {
 
   initNotifications();
 </script>
+  <script>
+      // 網頁一打開，就檢查網址後面有沒有黏「便利貼」
+      window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const medicalNote = urlParams.get('reply'); // 抓取名為 reply 的內容
+        
+        if (medicalNote) {
+          // 只要有字，就立刻彈出視窗給病人看
+          alert("👩‍⚕️ 醫護人員回覆：\n\n" + medicalNote);
+          
+          // (選用) 看完後把網址變乾淨，防止重新整理又跳一次
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      });
+    </script>
 </body>
 </html>
