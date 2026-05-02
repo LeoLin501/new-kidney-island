@@ -3126,7 +3126,7 @@ function toggleNbPanel() {
         fetch(gasUrl, {
           method: "POST",
           mode: "no-cors",
-          body: JSON.stringify({ token: token, name: "測試訪客" })
+          body: JSON.stringify({ token: token, name: "document.getElementById('patientName').value.trim() || "未具名個案"" })
         });
       }
     }
@@ -3150,4 +3150,13 @@ function toggleNbPanel() {
       });
     </script>
 </body>
+  <div style="padding: 20px; background: #f0f7f7; border-radius: 8px; margin: 10px;">
+  <h3 style="color: #2c7a7b;">🏥 護你Pass 個案登錄</h3>
+  <label for="patientName">請輸入您的姓名：</label>
+  <input type="text" id="patientName" placeholder="例如：王小明" style="padding: 8px; margin: 5px 0;">
+  <br>
+  <button id="btn-subscribe" style="padding: 10px 20px; background: #319795; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    開啟醫護回覆通知
+  </button>
+</div>
 </html>
