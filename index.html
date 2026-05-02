@@ -3108,7 +3108,8 @@ function toggleNbPanel() {
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  async function initNotifications() {
+  // 【關鍵修正 1】：將 initNotifications 綁定到 window，讓 HTML 按鈕可以呼叫它
+  window.initNotifications = async function() {
     try {
       const registration = await navigator.serviceWorker.register('sw.js');
       const permission = await Notification.requestPermission();
@@ -3120,36 +3121,27 @@ function toggleNbPanel() {
         });
 
         if (token) {
-          // ── 在點擊登入時抓取正確的姓名 ──
-          // 你原本個案登入卡的姓名輸入框 id 是 'f-name'
-          const patientName = document.getElementById('f-name').value.trim() || "未具名個案";
+          // 【關鍵修正 2】：抓取個案登入卡中的姓名輸入框 (id 為 f-name)
+          const actualName = document.getElementById('f-name').value.trim() || "未具名個案";
           
           const gasUrl = "https://script.google.com/macros/s/AKfycbwKGFdk4r5KTQ1t9mXyqko80p8wBKthjl5ijRvVtB8yRLDs3g1Sa6iSCxwHA3unm4bOtQ/exec"; 
           
           fetch(gasUrl, {
             method: "POST",
             mode: "no-cors",
-            // ✅ 正確寫法：name 後面不加引號，直接放變數
-            body: JSON.stringify({ 
-              token: token, 
-              name: patientName 
-            }),
-            headers: { "Content-Type": "application/json" }
+            // 這裡傳送真正的變數 actualName
+            body: JSON.stringify({ token: token, name: actualName })
           });
-          console.log("Token & Name 已傳送:", patientName);
+          console.log("已成功將個案「" + actualName + "」發送至試算表");
         }
       }
     } catch (err) {
-      console.error("初始化通知失敗:", err);
+      console.error("通知初始化失敗:", err);
     }
-  }
+  };
 
-  // 監聽原本的登入按鈕，點擊時才執行通知初始化與資料傳送
-  // 這樣才能確保抓到個案剛剛打進去的名字
-  const loginBtn = document.querySelector('.lbtn-teal');
-  if (loginBtn) {
-    loginBtn.addEventListener('click', initNotifications);
-  }
+  // 【關鍵修正 3】：刪除原本在最底部的 initNotifications(); 
+  // 這樣網頁一打開就不會自動發送「測試訪客」了。
 </script>
 </body>
 </html>
