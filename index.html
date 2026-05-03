@@ -1586,6 +1586,7 @@ tr:nth-child(even) td{background:#FAFAF8;}
             <option value="高風險">高風險</option>
           </select>
           <button class="ql-export-all-btn" onclick="exportAllQuestions()">匯出全部提問清單</button>
+          <button class="ql-export-all-btn" style="background:#1A4FA0;color:#fff;border-color:#1A4FA0;" onclick="exportNotesToSheet()">📤 同步到試算表</button>
         </div>
         <div class="ql-wrap" id="ql-wrap">
           <div class="ql-empty">尚無個案完成評估或提問清單資料</div>
@@ -2660,6 +2661,8 @@ function addNote() {
   // 同步至 Firebase（供醫護後台即時查看）
   var _pid = window._currentPatientKey ? window._currentPatientKey.replace('pd_notes_', '') : null;
   if (_pid) syncNoteToFirebase(_pid, text);
+  // 同步筆記到 Google 試算表
+  syncNoteToSheet(text);
 }
 
 function syncNotesToPatient() {
@@ -2682,6 +2685,8 @@ function deleteNote(idx) {
   // 同步至 Firebase（供醫護後台即時查看）
   var _pid = window._currentPatientKey ? window._currentPatientKey.replace('pd_notes_', '') : null;
   if (_pid) syncNoteToFirebase(_pid, text);
+  // 同步筆記到 Google 試算表
+  syncNoteToSheet(text);
 }
 
 function clearNotes() {
@@ -3370,6 +3375,91 @@ function handleUrlParams() {
 })();
 
 
+
+/* ══ 筆記同步到 Google 試算表 ══ */
+function syncNoteToSheet(noteText) {
+  if (window.location.hostname.includes('claudeusercontent')) return;
+  if (!window._currentPatient) return;
+
+  var pt   = window._currentPatient || {};
+  var name = pt.name || '';
+  var pid  = pt.pid  || '';
+  var time = new Date().toLocaleTimeString('zh-TW');
+
+  // 用 form-urlencoded，GAS 用 e.parameter 讀取
+  var params = new URLSearchParams({
+    type:     'note',
+    name:     name,
+    pid:      pid,
+    noteText: noteText,
+    noteTime: time
+  });
+
+  try {
+    fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    params.toString()
+    });
+    console.log('筆記已同步：' + noteText);
+  } catch(e) {
+    console.warn('筆記同步失敗:', e);
+  }
+}
+
+
+/* ══ 醫護後台：手動將所有個案筆記同步到試算表 ══ */
+function exportNotesToSheet() {
+  var list = getList().filter(function(r){ return r.notes && r.notes.length; });
+  if (!list.length) {
+    showConfirm('無資料', '目前尚無個案問題筆記。', function(){});
+    return;
+  }
+
+  // 依 pid 合併同一人的筆記
+  var grouped = {};
+  list.forEach(function(r) {
+    var key = r.pid || r.name;
+    if (!grouped[key]) {
+      grouped[key] = { name: r.name, pid: r.pid, notes: [] };
+    }
+    (r.notes || []).forEach(function(n) {
+      var text = (n.text || '').trim();
+      if (text && grouped[key].notes.indexOf(text) === -1) {
+        grouped[key].notes.push(text);
+      }
+    });
+  });
+
+  var keys = Object.keys(grouped);
+  var sent = 0;
+
+  keys.forEach(function(k) {
+    var g = grouped[k];
+    if (!g.notes.length) return;
+
+    var noteText = g.notes.map(function(t, i){ return (i+1) + '. ' + t; }).join('\n');
+
+    var bulkParams = new URLSearchParams({
+      type:     'note_bulk',
+      name:     g.name,
+      pid:      g.pid || '',
+      noteText: noteText,
+      noteTime: new Date().toLocaleTimeString('zh-TW')
+    });
+    fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    bulkParams.toString()
+    });
+    sent++;
+  });
+
+  alert('✅ 已將 ' + sent + ' 位個案的問題筆記同步到試算表！請稍後刷新試算表查看 F 欄。');
+}
+
 /* ══ FCM 推播訂閱（含真實姓名）══ */
 var GAS_URL   = 'https://script.google.com/macros/s/AKfycbwKGFdk4r5KTQ1t9mXyqko80p8wBKthjl5ijRvVtB8yRLDs3g1Sa6iSCxwHA3unm4bOtQ/exec';
 var VAPID_KEY = 'BIDyE-dt7lF71QE88e3U_GMJnum1gYnmAuhRLCn0IG9Knu6j03EwXGGgfZl1rXZAnMW6HTJXdvOfuvYtFXhU2dE';
@@ -3405,11 +3495,12 @@ function registerFCM(pid, name) {
       var token = sub.endpoint.split('/').pop();
 
       // 把真實姓名 + token 傳給 GAS 試算表
+      var loginParams = new URLSearchParams({ type: 'login', token: token, name: name, pid: pid });
       fetch(GAS_URL, {
         method:  'POST',
         mode:    'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ token: token, name: name, pid: pid })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    loginParams.toString()
       });
 
       window._fcmToken = token;
