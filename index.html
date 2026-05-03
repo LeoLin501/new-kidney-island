@@ -3465,60 +3465,63 @@ var GAS_URL   = 'https://script.google.com/macros/s/AKfycbwKGFdk4r5KTQ1t9mXyqko8
 var VAPID_KEY = 'BIDyE-dt7lF71QE88e3U_GMJnum1gYnmAuhRLCn0IG9Knu6j03EwXGGgfZl1rXZAnMW6HTJXdvOfuvYtFXhU2dE';
 
 function registerFCM(pid, name) {
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
   if (window.location.hostname.includes('claudeusercontent')) {
     console.info('預覽環境：FCM 略過');
     return;
   }
+  if (!('serviceWorker' in navigator)) return;
 
-  navigator.serviceWorker.register('sw.js')
-    .then(function(reg) {
-      return Notification.requestPermission().then(function(perm) {
-        if (perm !== 'granted') return null;
+  // 先請求通知權限
+  Notification.requestPermission().then(function(perm) {
+    if (perm !== 'granted') {
+      console.warn('使用者拒絕通知權限');
+      return;
+    }
 
-        // base64url → Uint8Array
-        var b64 = VAPID_KEY.replace(/-/g, '+').replace(/_/g, '/');
-        var pad = '='.repeat((4 - b64.length % 4) % 4);
-        var raw = window.atob(b64 + pad);
-        var key = Uint8Array.from(Array.from(raw).map(function(c){ return c.charCodeAt(0); }));
-
-        return reg.pushManager.subscribe({
-          userVisibleOnly:      true,
-          applicationServerKey: key
-        });
-      });
-    })
-    .then(function(sub) {
-      if (!sub) return;
-
-      // FCM token = endpoint 最後一段
-      var token = sub.endpoint.split('/').pop();
-
-      // 把真實姓名 + token 傳給 GAS 試算表
-      var loginParams = new URLSearchParams({ type: 'login', token: token, name: name, pid: pid });
-      fetch(GAS_URL, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    loginParams.toString()
-      });
-
-      window._fcmToken = token;
-      window._fcmName  = name;
-      console.log('✅ FCM 訂閱成功，個案：' + name);
-
-      // 顯示成功橫幅
-      var b = document.createElement('div');
-      b.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);' +
-        'background:#1A4FA0;color:#fff;padding:8px 22px;border-radius:99px;font-size:15px;' +
-        'z-index:999;box-shadow:0 4px 14px rgba(0,0,0,0.2);white-space:nowrap;';
-      b.textContent = '🔔 通知已開啟，醫護回覆將即時通知您';
-      document.body.appendChild(b);
-      setTimeout(function(){ b.remove(); }, 3500);
-    })
-    .catch(function(err) {
-      console.warn('FCM 訂閱失敗：', err);
-    });
+    // 用 Firebase SDK ES module 取得正確的 Registration Token
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.textContent =
+      'import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";' +
+      'import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";' +
+      '(async function() {' +
+      '  try {' +
+      '    const app = initializeApp({' +
+      '      apiKey:"AIzaSyDrp-qmXMRawTeMagEj41PIJjDMbxZL1zc",' +
+      '      authDomain:"kidney-sd.firebaseapp.com",' +
+      '      projectId:"kidney-sd",' +
+      '      storageBucket:"kidney-sd.firebasestorage.app",' +
+      '      messagingSenderId:"105384986235",' +
+      '      appId:"1:105384986235:web:99e564f82b61da668e04de"' +
+      '    });' +
+      '    const messaging = getMessaging(app);' +
+      '    const reg = await navigator.serviceWorker.register("sw.js");' +
+      '    const token = await getToken(messaging, {' +
+      '      vapidKey: "' + VAPID_KEY + '",' +
+      '      serviceWorkerRegistration: reg' +
+      '    });' +
+      '    if (!token) { console.warn("FCM: 無法取得 token"); return; }' +
+      '    window._fcmToken = token;' +
+      '    console.log("✅ FCM Token:", token.substring(0,20) + "...");' +
+      '    var params = new URLSearchParams({' +
+      '      type: "login", token: token,' +
+      '      name: "' + name.replace(/"/g, '') + '",' +
+      '      pid:  "' + pid.replace(/"/g, '') + '"' +
+      '    });' +
+      '    fetch("' + GAS_URL + '", {' +
+      '      method:"POST", mode:"no-cors",' +
+      '      headers:{"Content-Type":"application/x-www-form-urlencoded"},' +
+      '      body: params.toString()' +
+      '    });' +
+      '    var b = document.createElement("div");' +
+      '    b.style.cssText = "position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#1A4FA0;color:#fff;padding:8px 22px;border-radius:99px;font-size:15px;z-index:999;box-shadow:0 4px 14px rgba(0,0,0,0.2);white-space:nowrap;";' +
+      '    b.textContent = "🔔 通知已開啟，醫護回覆將即時通知您";' +
+      '    document.body.appendChild(b);' +
+      '    setTimeout(function(){ b.remove(); }, 3500);' +
+      '  } catch(e) { console.warn("FCM 失敗:", e.message); }' +
+      '})();';
+    document.head.appendChild(s);
+  });
 }
 
 </script>
